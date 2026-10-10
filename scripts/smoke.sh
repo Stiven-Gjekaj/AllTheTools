@@ -104,3 +104,7 @@ step lsusb --json
 # lspci lists the PCI devices. Each runner is a virtual machine with some.
 step lspci
 step lspci --json
+
+# battery reads the batteries. A runner has none, and the tool says so.
+step battery
+step battery --json
