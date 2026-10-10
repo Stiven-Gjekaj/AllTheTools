@@ -7,6 +7,7 @@ pub mod clip;
 pub mod ldd;
 pub mod lspci;
 pub mod lsusb;
+pub mod netquality;
 pub mod sensors;
 pub mod timeout;
 pub mod unquarantine;
