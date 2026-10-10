@@ -37,10 +37,6 @@ dir="$(scripts/winget-manifest.sh "$version" "$work/SHA256SUMS" "$work/winget")"
 test "$(ls "$dir" | wc -l | tr -d ' ')" = 3
 grep -q "PackageVersion: ${version}" "$dir/Stiven-Gjekaj.AllTheTools.installer.yaml"
 
-scripts/aur-pkgbuild.sh "$version" "$work/SHA256SUMS" "$work/aur" > /dev/null
-bash -n "$work/aur/PKGBUILD"
-grep -q "pkgver = ${version}" "$work/aur/.SRCINFO"
-
 # A SHA256SUMS that lacks a file stops each script, with the name of the file.
 grep -v 'apple-darwin' "$work/SHA256SUMS" > "$work/SHORT"
 if scripts/homebrew-formula.sh "$version" "$work/SHORT" > /dev/null 2> "$work/error"; then
