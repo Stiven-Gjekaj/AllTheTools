@@ -1,0 +1,21 @@
+# The output of cargo. It is made from the source.
+/target/
+
+# The output of a release build and of the package scripts.
+/dist/
+
+# Disk images. A test makes these, and none of them belongs in the repository.
+*.img
+*.iso
+*.vhd
+
+# Operating system files.
+.DS_Store
+Thumbs.db
+
+# Editor and tool directories. What the project asks of an assistant is in
+# AGENTS.md, which every contributor reads and no tool has to be configured
+# to obey.
+.idea/
+.vscode/
+.claude/
