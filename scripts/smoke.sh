@@ -265,3 +265,33 @@ step whoholds "$hold_dir/held.txt"
 kill "$holder" 2>/dev/null || true
 wait "$holder" 2>/dev/null || true
 rm -rf "$hold_dir"
+
+# surface reads an image file, then writes it and reads it back. The answer
+# to the question comes from a pipe. Linux and Windows then do the same on a
+# real block device that backs a file: a loop device, and an attached VHD.
+scan_dir="$(mktemp -d)"
+head -c 33554432 /dev/zero > "$scan_dir/scan.img"
+step surface "$scan_dir/scan.img"
+printf 'scan.img\n' | "$ATT" surface --write "$scan_dir/scan.img"
+case "$(uname -s)" in
+    Linux)
+        loop="$(sudo losetup --find --show "$scan_dir/scan.img")"
+        echo "::group::sudo att surface $loop"
+        sudo "$ATT" surface "$loop"
+        printf '%s\n' "${loop#/dev/}" | sudo "$ATT" surface --write --force "$loop"
+        echo "::endgroup::"
+        sudo losetup --detach "$loop"
+        ;;
+    Darwin) ;;
+    *)
+        vhd="$(cygpath -w "$scan_dir/scan.vhd")"
+        printf 'create vdisk file="%s" maximum=64 type=fixed\nselect vdisk file="%s"\nattach vdisk\n' "$vhd" "$vhd" > "$scan_dir/attach.txt"
+        diskpart /s "$(cygpath -w "$scan_dir/attach.txt")" > "$scan_dir/diskpart.log" || { cat "$scan_dir/diskpart.log"; exit 1; }
+        number="$("$ATT" lsblk --json | "$PY" -c 'import json, sys; print([d["id"] for d in json.load(sys.stdin) if d["virtual_disk"]][-1])')"
+        step surface "$number"
+        printf '%s\n' "$number" | "$ATT" surface --write --force "$number"
+        printf 'select vdisk file="%s"\ndetach vdisk\n' "$vhd" > "$scan_dir/detach.txt"
+        diskpart /s "$(cygpath -w "$scan_dir/detach.txt")" > /dev/null
+        ;;
+esac
+rm -rf "$scan_dir"
