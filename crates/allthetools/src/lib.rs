@@ -23,6 +23,7 @@ pub fn run() -> i32 {
         Command::Awake(args) => tools::awake::run(args),
         Command::Clip(args) => tools::clip::run(args),
         Command::Ldd(args) => tools::ldd::run(args),
+        Command::Lsusb(args) => tools::lsusb::run(args),
         Command::Timeout(args) => tools::timeout::run(args),
         Command::Unquarantine(args) => tools::unquarantine::run(args),
         Command::Wol(args) => tools::wol::run(args),

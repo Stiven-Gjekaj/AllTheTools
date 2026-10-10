@@ -22,6 +22,8 @@ pub enum Command {
     Clip(tools::clip::Args),
     /// List the libraries that a binary needs, and where each one is.
     Ldd(tools::ldd::Args),
+    /// List the USB devices.
+    Lsusb(tools::lsusb::Args),
     /// Run a command, and stop it when its time runs out.
     Timeout(tools::timeout::Args),
     /// Remove the download mark from files, so the system starts them
