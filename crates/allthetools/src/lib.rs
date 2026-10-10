@@ -34,6 +34,7 @@ pub fn run() -> i32 {
         Command::Sensors(args) => tools::sensors::run(args),
         Command::Timeout(args) => tools::timeout::run(args),
         Command::Unquarantine(args) => tools::unquarantine::run(args),
+        Command::Whoholds(args) => tools::whoholds::run(args),
         Command::Whoport(args) => tools::whoport::run(args),
         Command::Wifi(args) => tools::wifi::run(args),
         Command::Wol(args) => tools::wol::run(args),

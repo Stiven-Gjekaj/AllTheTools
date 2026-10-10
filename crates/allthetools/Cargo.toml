@@ -49,6 +49,7 @@ features = [
     "Win32_System_Memory",
     "Win32_System_Ole",
     "Win32_System_Power",
+    "Win32_System_RestartManager",
     "Win32_System_Threading",
 ]
 
