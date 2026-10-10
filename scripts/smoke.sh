@@ -51,7 +51,9 @@ echo sample > "$mark_dir/download"
 case "$(uname -s)" in
     Darwin) xattr -w com.apple.quarantine "0083;66f1c2a0;Safari;" "$mark_dir/download" ;;
     Linux) python3 -c 'import os, sys; os.setxattr(sys.argv[1], "user.xdg.origin.url", b"https://example.com/")' "$mark_dir/download" ;;
-    *) printf '[ZoneTransfer]\r\nZoneId=3\r\n' > "$mark_dir/download:Zone.Identifier" ;;
+    # The shell of Git for Windows changes a colon in a file name, so
+    # PowerShell writes the stream.
+    *) powershell.exe -NoProfile -Command "Set-Content -Path '$(cygpath -w "$mark_dir/download")' -Stream Zone.Identifier -Value '[ZoneTransfer]','ZoneId=3'" ;;
 esac
 step unquarantine --check "$mark_dir/download"
 "$ATT" unquarantine --check "$mark_dir/download" | grep -q "1 of 1"
