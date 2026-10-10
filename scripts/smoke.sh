@@ -60,3 +60,18 @@ step unquarantine --check "$mark_dir/download"
 step unquarantine "$mark_dir/download"
 "$ATT" unquarantine --check "$mark_dir/download" | grep -q "0 of 1"
 rm -rf "$mark_dir"
+
+# clip copies a line and pastes it back. A Linux runner has no desktop
+# session and so no clipboard, and the tool says so.
+case "$(uname -s)" in
+    Linux)
+        if "$ATT" clip paste; then
+            echo "att clip pasted with no desktop session" >&2
+            exit 1
+        fi
+        ;;
+    *)
+        "$ATT" clip copy "att smoke $$"
+        test "$("$ATT" clip paste)" = "att smoke $$"
+        ;;
+esac
