@@ -15,7 +15,9 @@ use anyhow::{Context, Result};
 use super::parse::{self, Reply};
 
 /// I2C_SLAVE of linux/i2c-dev.h: the address of the next reads and writes.
-const I2C_SLAVE: libc::c_ulong = 0x0703;
+/// glibc takes the request of ioctl as an unsigned long, and musl as an
+/// int. libc::Ioctl is the type of the libc that builds att.
+const I2C_SLAVE: libc::Ioctl = 0x0703;
 
 pub struct Monitor {
     pub name: String,
