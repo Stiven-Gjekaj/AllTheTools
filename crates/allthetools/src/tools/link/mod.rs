@@ -29,7 +29,7 @@ pub struct Args {
 
 pub fn run(args: Args) -> Result<i32> {
     let att = std::env::current_exe().context("could not find the path of att")?;
-    let att = std::fs::canonicalize(&att).unwrap_or(att);
+    let att = plain(std::fs::canonicalize(&att).unwrap_or(att));
     let dir = match args.dir {
         Some(dir) => dir,
         None => att.parent().context("att has no directory")?.to_path_buf(),
@@ -52,6 +52,16 @@ pub fn run(args: Args) -> Result<i32> {
         }
     }
     Ok(if failed { 1 } else { 0 })
+}
+
+/// canonicalize gives the \\?\ form on Windows, and cmd.exe cannot start a
+/// program with that form, so the shim gets the plain path.
+fn plain(path: PathBuf) -> PathBuf {
+    let text = path.to_string_lossy();
+    match text.strip_prefix(r"\\?\") {
+        Some(rest) if !rest.starts_with("UNC\\") => PathBuf::from(rest),
+        _ => path,
+    }
 }
 
 fn file_name(name: &str) -> String {
