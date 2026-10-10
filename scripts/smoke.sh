@@ -20,3 +20,15 @@ step() {
 }
 
 step --version
+
+# timeout gives the exit code of GNU timeout. It stops nothing outside the
+# command that it starts.
+step timeout 5 true
+set +e
+"$ATT" timeout 1 sleep 5
+code=$?
+set -e
+if [ "$code" != 124 ]; then
+    echo "att timeout gave $code for a command past its time, and not 124" >&2
+    exit 1
+fi
