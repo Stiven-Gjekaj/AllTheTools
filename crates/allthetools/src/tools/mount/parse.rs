@@ -73,31 +73,35 @@ pub fn hdiutil(bytes: &[u8]) -> Result<Vec<Attached>> {
     Ok(out)
 }
 
-/// Find the whole device of an attached image in `hdiutil info -plist`. The
-/// path of the image must be the full path, as hdiutil keeps it.
-pub fn hdiutil_device(bytes: &[u8], image: &str) -> Result<Option<String>> {
+/// Read each attached image of `hdiutil info -plist`: its path, as the
+/// person gave it to hdiutil, and its whole device.
+pub fn hdiutil_images(bytes: &[u8]) -> Result<Vec<(String, String)>> {
     let value = plist::Value::from_reader_xml(bytes)
         .context("hdiutil gave a property list that is not valid")?;
     let images = value
         .as_dictionary()
         .and_then(|d| d.get("images"))
         .and_then(plist::Value::as_array);
+    let mut out = Vec::new();
     for entry in images.into_iter().flatten() {
         let Some(d) = entry.as_dictionary() else {
             continue;
         };
-        if d.get("image-path").and_then(plist::Value::as_string) != Some(image) {
+        let Some(path) = d.get("image-path").and_then(plist::Value::as_string) else {
             continue;
-        }
-        let devices = d
+        };
+        let device = d
             .get("system-entities")
             .and_then(plist::Value::as_array)
             .into_iter()
             .flatten()
-            .filter_map(|e| e.as_dictionary()?.get("dev-entry")?.as_string());
-        return Ok(devices.min_by_key(|d| d.len()).map(str::to_owned));
+            .filter_map(|e| e.as_dictionary()?.get("dev-entry")?.as_string())
+            .min_by_key(|d| d.len());
+        if let Some(device) = device {
+            out.push((path.to_owned(), device.to_owned()));
+        }
     }
-    Ok(None)
+    Ok(out)
 }
 
 /// Read the device of `udisksctl loop-setup`, which writes
@@ -219,14 +223,11 @@ mod tests {
 </plist>"#;
 
     #[test]
-    fn hdiutil_device_finds_the_whole_device_of_an_image() {
+    fn hdiutil_images_gives_the_whole_device_of_each_image() {
         assert_eq!(
-            hdiutil_device(INFO.as_bytes(), "/Users/me/test.dmg")
-                .unwrap()
-                .as_deref(),
-            Some("/dev/disk4")
+            hdiutil_images(INFO.as_bytes()).unwrap(),
+            [("/Users/me/test.dmg".to_owned(), "/dev/disk4".to_owned())]
         );
-        assert_eq!(hdiutil_device(INFO.as_bytes(), "/other.dmg").unwrap(), None);
     }
 
     #[test]

@@ -28,10 +28,17 @@ pub fn attach(image: &Path, kind: Kind, read_only: bool) -> Result<Vec<Attached>
 pub fn detach(target: &str) -> Result<String> {
     let path = Path::new(target);
     let device = if path.is_file() {
+        // hdiutil keeps the path that it got, and /var is a link to
+        // /private/var. So both sides of the test are the full path.
         let full = std::fs::canonicalize(path)?;
         let info = host::output("hdiutil", &["info", "-plist"], None)?;
-        match parse::hdiutil_device(&info, &full.to_string_lossy())? {
-            Some(device) => device,
+        let found = parse::hdiutil_images(&info)?
+            .into_iter()
+            .find(|(image, _)| {
+                std::fs::canonicalize(image).ok().as_deref() == Some(full.as_path())
+            });
+        match found {
+            Some((_, device)) => device,
             None => bail!("{target} is not attached"),
         }
     } else {
