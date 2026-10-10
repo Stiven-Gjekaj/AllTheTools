@@ -81,3 +81,8 @@ esac
 # awake holds the system awake for one second, and for one short command.
 step awake --time 1
 step awake --display true
+
+# lsusb lists the USB devices. A runner can have none.
+step lsusb
+step lsusb --long
+step lsusb --json
