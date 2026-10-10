@@ -17,4 +17,4 @@ The first version, 0.1.0, with twenty tools in one binary, `att`:
 - `att link`, which makes the familiar names, such as `lsusb` and `f3probe`,
   run `att`.
 - Binaries for Linux, macOS and Windows on x86_64 and arm64, a `.deb` and a
-  `.rpm`, and the files of Homebrew, Scoop, winget and the AUR.
+  `.rpm`, and the files of Homebrew, Scoop and winget.

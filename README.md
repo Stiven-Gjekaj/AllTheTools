@@ -103,12 +103,6 @@ On Windows, with winget, when Microsoft accepts the manifest:
 winget install Stiven-Gjekaj.AllTheTools
 ```
 
-On Arch Linux, from the AUR:
-
-```bash
-yay -S allthetools-bin
-```
-
 On Debian, Ubuntu, Fedora or openSUSE, with the package of the
 [latest release](https://github.com/Stiven-Gjekaj/AllTheTools/releases/latest):
 
@@ -122,8 +116,9 @@ sudo dnf install ./allthetools-0.1.0-1.x86_64.rpm
 
 Or download the binary for your host from the
 [latest release](https://github.com/Stiven-Gjekaj/AllTheTools/releases/latest).
-The Linux binary carries its own C library, and the Windows binary carries
-the Microsoft C runtime, so neither needs anything installed beside it.
+The Linux binary carries its own C library, so it runs on any distribution,
+Arch Linux too. The Windows binary carries the Microsoft C runtime, so neither
+needs anything installed beside it.
 [docs/releasing.md](docs/releasing.md) says how to check a download against
 `SHA256SUMS` and against its build provenance.
 

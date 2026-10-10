@@ -6,7 +6,7 @@
 
 A release is a decision that a person makes. The workflow does the rest, and
 it does nothing until a tag tells it to. Each package manager gets the release
-from a person, and no bot pushes to a tap, a bucket or the AUR.
+from a person, and no bot pushes to a tap or a bucket.
 
 ## Before a release
 
@@ -84,28 +84,6 @@ The title of the pull request is `New package: Stiven-Gjekaj.AllTheTools
 version 0.1.0` for the first version, and
 `Update: Stiven-Gjekaj.AllTheTools to <version>` for each later one. Microsoft
 checks the pull request, and a bot merges it.
-
-### The AUR
-
-The package is `allthetools-bin`, and it installs the musl binary of the
-release. The AUR keeps each package in a Git repository of its own, and a push
-needs the SSH key of the account of the maintainer on aur.archlinux.org.
-
-From a checkout of the tag, so the licence matches the tag:
-
-    git clone ssh://aur@aur.archlinux.org/allthetools-bin.git ../aur-allthetools-bin
-    scripts/aur-pkgbuild.sh 0.1.0 release/SHA256SUMS ../aur-allthetools-bin
-
-Check it on Arch Linux, where `makepkg` exists, and then commit and push:
-
-    cd ../aur-allthetools-bin
-    makepkg --printsrcinfo | diff - .SRCINFO
-    makepkg -si
-    git add PKGBUILD .SRCINFO
-    git commit -m "Update to 0.1.0"
-    git push
-
-The first push creates the package on the AUR.
 
 ### Debian and RPM
 

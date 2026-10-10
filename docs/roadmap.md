@@ -30,7 +30,7 @@ card. These tests wait for a person with the hardware, and
 ## 2. The first release
 
 Version 0.1.0 goes to each channel that [docs/releasing.md](releasing.md)
-names: Homebrew, Scoop, winget, the AUR, and the `.deb` and `.rpm` assets.
+names: Homebrew, Scoop, winget, and the `.deb` and `.rpm` assets.
 
 ## 3. Closer to the API of the host
 
