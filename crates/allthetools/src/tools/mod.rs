@@ -3,4 +3,5 @@
 
 pub mod ldd;
 pub mod timeout;
+pub mod unquarantine;
 pub mod wol;
