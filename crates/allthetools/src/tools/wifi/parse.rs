@@ -70,7 +70,12 @@ pub fn apple_security(code: i64) -> &'static str {
 
 /// The CWSecurity values to test, from the strongest to the weakest. A
 /// network supports more than one, and the first that it supports names it.
-pub const APPLE_SECURITY_ORDER: [i64; 13] = [11, 12, 13, 9, 10, 4, 3, 2, 7, 8, 14, 1, 0];
+///
+/// The values for two modes at once, such as 13 for WPA2/WPA3, are not in
+/// the list. CoreWLAN says that a WPA2 network supports 13, because one of
+/// the two modes matches. A network that supports WPA3 and WPA2 matches 11
+/// first, and is WPA3.
+pub const APPLE_SECURITY_ORDER: [i64; 11] = [11, 12, 9, 4, 3, 2, 7, 8, 14, 1, 0];
 
 /// The name of an authentication algorithm of the WLAN API of Windows, from
 /// DOT11_AUTH_ALGORITHM.
