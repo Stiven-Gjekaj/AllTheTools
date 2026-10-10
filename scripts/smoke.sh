@@ -113,3 +113,25 @@ step battery --json
 # can have no sensor, and the tool says so.
 step sensors
 step sensors --json
+
+# whoport finds a server that this script starts on a free port, and stops
+# it. Nothing else is stopped.
+step whoport
+port=$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])' 2>/dev/null \
+    || python -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')
+PY=python3
+command -v python3 >/dev/null 2>&1 || PY=python
+"$PY" -m http.server "$port" --bind 127.0.0.1 >/dev/null 2>&1 &
+server=$!
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+    "$ATT" whoport "$port" >/dev/null 2>&1 && break
+    sleep 1
+done
+step whoport "$port"
+step whoport "$port" --kill --yes
+sleep 1
+if "$ATT" whoport "$port" >/dev/null 2>&1; then
+    echo "att whoport --kill left the server on port $port" >&2
+    kill "$server" 2>/dev/null || true
+    exit 1
+fi
