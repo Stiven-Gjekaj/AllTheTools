@@ -441,6 +441,18 @@ pub fn mac(list: &[MacWhole], infos: &HashMap<String, MacInfo>, root: &MacInfo) 
     for store in &root.stores {
         system.insert(mac_whole(store));
     }
+    // Each other APFS container on the system drive, such as the one of
+    // Recovery, is a part of the system too.
+    let physical: Vec<String> = system.iter().cloned().collect();
+    for whole in list {
+        if whole
+            .stores
+            .iter()
+            .any(|s| physical.contains(&mac_whole(s)))
+        {
+            system.insert(whole.id.clone());
+        }
+    }
 
     list.iter()
         .map(|whole| {
@@ -725,8 +737,8 @@ mod tests {
 
     // Captured with `diskutil list -plist` on a MacBook with Apple silicon,
     // and cut down to the physical disk, its main APFS container, and the
-    // keys that the parser reads. The USB stick, disk4, is added in the same
-    // form.
+    // keys that the parser reads, with the container of iSC on disk0s1. The
+    // USB stick, disk4, is added in the same form.
     const LIST: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -774,6 +786,13 @@ mod tests {
       <key>Size</key><integer>494332366848</integer>
     </dict>
     <dict>
+      <key>APFSPhysicalStores</key>
+      <array><dict><key>DeviceIdentifier</key><string>disk0s1</string></dict></array>
+      <key>Content</key><string>Apple_APFS_Container</string>
+      <key>DeviceIdentifier</key><string>disk1</string>
+      <key>Size</key><integer>576716800</integer>
+    </dict>
+    <dict>
       <key>Content</key><string>FDisk_partition_scheme</string>
       <key>DeviceIdentifier</key><string>disk4</string>
       <key>Partitions</key>
@@ -810,7 +829,7 @@ mod tests {
     #[test]
     fn mac_marks_the_container_of_root_and_the_disk_under_it() {
         let list = mac_list(LIST.as_bytes()).unwrap();
-        assert_eq!(list.len(), 3);
+        assert_eq!(list.len(), 4);
         assert_eq!(list[1].stores, ["disk0s2"]);
 
         let infos = HashMap::from([
@@ -832,12 +851,14 @@ mod tests {
         let disks = mac(&list, &infos, &root);
         assert!(disks[0].system, "disk0 holds the container of /");
         assert!(disks[1].system && disks[1].virtual_disk);
-        let stick = &disks[2];
+        assert!(disks[2].system, "the iSC container lives on disk0");
+        let stick = &disks[3];
         assert!(!stick.system && stick.removable);
         assert_eq!(stick.raw_path, "/dev/rdisk4");
         assert_eq!(stick.partitions[0].filesystem.as_deref(), Some("vfat"));
         assert_eq!(stick.partitions[0].mount.as_deref(), Some("/Volumes/STICK"));
         assert_eq!(disks[1].partitions[0].mount.as_deref(), Some("/"));
+        assert!(!disks[3].system);
     }
 
     // Captured with `diskutil info -plist /` on the same MacBook, and cut
