@@ -36,6 +36,8 @@ pub enum Command {
     /// Remove the download mark from files, so the system starts them
     /// without a warning.
     Unquarantine(tools::unquarantine::Args),
+    /// Show which process listens on a port, and stop it when asked.
+    Whoport(tools::whoport::Args),
     /// Wake a computer on the local network with a magic packet.
     Wol(tools::wol::Args),
 }
