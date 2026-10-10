@@ -67,7 +67,9 @@ const HID_TEMPERATURE: i64 = 15;
 pub fn read() -> Result<Vec<parse::Reading>> {
     let mut readings = parse::hid_temperatures(&hid_temperatures());
     match Smc::open() {
-        Ok(smc) => {
+        // A virtual machine has no SMC, and so no sensor.
+        Ok(None) => {}
+        Ok(Some(smc)) => {
             if readings.is_empty() {
                 readings = parse::smc_temperatures(&smc.temperatures());
             }
@@ -199,7 +201,8 @@ fn code(text: &[u8; 4]) -> u32 {
 }
 
 impl Smc {
-    fn open() -> Result<Self> {
+    /// The connection to the SMC, or `None` when this Mac has no SMC.
+    fn open() -> Result<Option<Self>> {
         let name: &CStr = c"AppleSMC";
         // SAFETY: IOServiceMatching takes a C string, and
         // IOServiceGetMatchingService takes the reference of the dictionary.
@@ -209,7 +212,7 @@ impl Smc {
             let service =
                 IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching(name.as_ptr()));
             if service == 0 {
-                bail!("this Mac has no SMC service");
+                return Ok(None);
             }
             let mut connect = 0;
             let status = IOServiceOpen(service, mach_task_self(), 0, &mut connect);
@@ -217,7 +220,7 @@ impl Smc {
             if status != 0 {
                 bail!("macOS refused the connection to the SMC ({status:#x})");
             }
-            Ok(Smc(connect))
+            Ok(Some(Smc(connect)))
         }
     }
 
