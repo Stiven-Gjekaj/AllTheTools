@@ -49,7 +49,7 @@ pub struct Entry {
     /// 1 for a library that the binary names, 2 for a library of that
     /// library, and so on.
     pub depth: usize,
-    #[serde(skip)]
+    /// In a tree, the library is already in the tree above this line.
     pub repeat: bool,
 }
 
