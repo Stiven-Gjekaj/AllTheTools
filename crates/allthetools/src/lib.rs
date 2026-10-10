@@ -21,6 +21,7 @@ pub fn run() -> i32 {
     let result: anyhow::Result<i32> = match cli.command {
         Command::Ldd(args) => tools::ldd::run(args),
         Command::Timeout(args) => tools::timeout::run(args),
+        Command::Unquarantine(args) => tools::unquarantine::run(args),
         Command::Wol(args) => tools::wol::run(args),
     };
     match result {
