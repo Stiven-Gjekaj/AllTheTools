@@ -57,3 +57,34 @@ features = [
 
 [lints]
 workspace = true
+
+# The Debian package. The release workflow builds it from the musl binary,
+# with `cargo deb --no-build`, so the package needs no library of the host.
+[package.metadata.deb]
+name = "allthetools"
+maintainer = "Stiven Gjekaj <stivenagostingjekaj@gmail.com>"
+copyright = "2026, Stiven Gjekaj"
+license-file = ["../../LICENSE", "0"]
+extended-description = """\
+One command, att, that gives the same small tools on Windows, on macOS and on \
+Linux: lsusb, lspci, lsblk, f3probe, badblocks, sensors, ldd, timeout, \
+caffeinate, a clipboard, Wake-on-LAN, networkQuality and more."""
+section = "utils"
+priority = "optional"
+depends = ""
+assets = [
+    ["target/release/att", "usr/bin/", "755"],
+    ["../../README.md", "usr/share/doc/allthetools/README.md", "644"],
+]
+
+# The RPM package, from the same musl binary, with
+# `cargo generate-rpm --target`.
+[package.metadata.generate-rpm]
+name = "allthetools"
+summary = "The same small tools on Windows, on macOS and on Linux, in one binary"
+auto-req = "no"
+assets = [
+    { source = "target/release/att", dest = "/usr/bin/att", mode = "755" },
+    { source = "../../LICENSE", dest = "/usr/share/licenses/allthetools/LICENSE", mode = "644", doc = true },
+    { source = "../../README.md", dest = "/usr/share/doc/allthetools/README.md", mode = "644", doc = true },
+]
