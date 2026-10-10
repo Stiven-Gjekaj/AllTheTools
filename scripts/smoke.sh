@@ -79,8 +79,22 @@ case "${CI:-}-$(uname -s)" in
 esac
 
 # awake holds the system awake for one second, and for one short command.
-step awake --time 1
-step awake --display true
+# logind gives the lock only to a user with a session, and a Linux runner
+# has none. There the tool must refuse with the reason of logind.
+case "$(uname -s)" in
+    Linux)
+        if out="$("$ATT" awake --time 1 2>&1)"; then
+            echo "att awake held a lock with no session: $out" >&2
+            exit 1
+        fi
+        echo "$out"
+        echo "$out" | grep -q "logind refused the lock"
+        ;;
+    *)
+        step awake --time 1
+        step awake --display true
+        ;;
+esac
 
 # lsusb lists the USB devices. A runner can have none.
 step lsusb
