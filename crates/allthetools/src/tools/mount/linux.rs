@@ -43,29 +43,31 @@ pub fn attach(image: &Path, kind: Kind, read_only: bool) -> Result<Vec<Attached>
         }
         let text = host::text("udisksctl", &args, None)?;
         let device = parse::udisks_loop(&text).context("udisksctl named no loop device")?;
+        let mount = |part: &str| {
+            host::text("udisksctl", &["mount", "--block-device", part], None)
+                .ok()
+                .and_then(|t| parse::udisks_mount(&t))
+        };
+        let parts = volumes(&device)?;
+        // A disc image has its file system on the loop device itself, so the
+        // device is the one line, with its mount point.
+        if parts.is_empty() {
+            out.push(Attached {
+                mount: mount(&device),
+                device,
+                filesystem: None,
+            });
+            return Ok(out);
+        }
         out.push(Attached {
-            device: device.clone(),
+            device,
             ..Attached::default()
         });
-        // A disc image has its file system on the loop device itself.
-        let mut targets: Vec<(String, Option<String>, Option<String>)> = volumes(&device)?
-            .into_iter()
-            .map(|p| (p.path, p.mount, p.filesystem))
-            .collect();
-        if targets.is_empty() {
-            targets.push((device.clone(), None, None));
-        }
-        for (part, mount, filesystem) in targets {
-            let mount = match mount {
-                Some(mount) => Some(mount),
-                None => host::text("udisksctl", &["mount", "--block-device", &part], None)
-                    .ok()
-                    .and_then(|t| parse::udisks_mount(&t)),
-            };
+        for part in parts {
             out.push(Attached {
-                device: part,
-                mount,
-                filesystem,
+                mount: part.mount.clone().or_else(|| mount(&part.path)),
+                device: part.path,
+                filesystem: part.filesystem,
             });
         }
         return Ok(out);
@@ -80,13 +82,15 @@ pub fn attach(image: &Path, kind: Kind, read_only: bool) -> Result<Vec<Attached>
     }
     args.push(&path);
     let device = host::text("losetup", &args, None)?.trim().to_owned();
-    out.push(Attached {
-        device: device.clone(),
-        ..Attached::default()
-    });
     let mut parts: Vec<String> = volumes(&device)?.into_iter().map(|p| p.path).collect();
     if parts.is_empty() {
+        // A disc image: the device itself is the one line.
         parts.push(device.clone());
+    } else {
+        out.push(Attached {
+            device: device.clone(),
+            ..Attached::default()
+        });
     }
     for part in parts {
         let name = part.trim_start_matches("/dev/");
