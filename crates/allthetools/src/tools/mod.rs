@@ -4,6 +4,7 @@
 pub mod awake;
 pub mod clip;
 pub mod ldd;
+pub mod lsusb;
 pub mod timeout;
 pub mod unquarantine;
 pub mod wol;
