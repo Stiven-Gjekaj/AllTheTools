@@ -21,6 +21,7 @@ pub fn run() -> i32 {
     let cli = Cli::parse();
     let result: anyhow::Result<i32> = match cli.command {
         Command::Awake(args) => tools::awake::run(args),
+        Command::Battery(args) => tools::battery::run(args),
         Command::Clip(args) => tools::clip::run(args),
         Command::Ldd(args) => tools::ldd::run(args),
         Command::Lspci(args) => tools::lspci::run(args),

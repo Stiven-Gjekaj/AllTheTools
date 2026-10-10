@@ -18,6 +18,8 @@ pub enum Command {
     /// Keep the system awake for a time, while a process runs, or while a
     /// command runs.
     Awake(tools::awake::Args),
+    /// Show the charge, the health and the cycle count of each battery.
+    Battery(tools::battery::Args),
     /// Copy text to the clipboard, and paste it.
     Clip(tools::clip::Args),
     /// List the libraries that a binary needs, and where each one is.
