@@ -32,6 +32,19 @@ diskpart_script() {
     MSYS_NO_PATHCONV=1 diskpart /s "$(cygpath -w "$1")"
 }
 
+# Make an empty VHD of 64 MB on Windows, and attach it with no letter.
+# diskpart makes it, and Storage Management attaches it, because diskpart
+# lost track of a VHD after a write to its raw disk.
+vhd_attach() {
+    printf 'create vdisk file="%s" maximum=64 type=fixed\n' "$(cygpath -w "$1")" > "$1.txt"
+    diskpart_script "$1.txt" > "$1.log" || { cat "$1.log"; exit 1; }
+    powershell.exe -NoProfile -Command "Mount-DiskImage -ImagePath '$(cygpath -w "$1")' -Access ReadWrite -NoDriveLetter | Out-Null"
+}
+
+vhd_detach() {
+    powershell.exe -NoProfile -Command "Dismount-DiskImage -ImagePath '$(cygpath -w "$1")' | Out-Null"
+}
+
 step --version
 
 # timeout gives the exit code of GNU timeout. It stops nothing outside the
@@ -290,14 +303,11 @@ case "$(uname -s)" in
         ;;
     Darwin) ;;
     *)
-        vhd="$(cygpath -w "$scan_dir/scan.vhd")"
-        printf 'create vdisk file="%s" maximum=64 type=fixed\nselect vdisk file="%s"\nattach vdisk\n' "$vhd" "$vhd" > "$scan_dir/attach.txt"
-        diskpart_script "$scan_dir/attach.txt" > "$scan_dir/diskpart.log" || { cat "$scan_dir/diskpart.log"; exit 1; }
+        vhd_attach "$scan_dir/scan.vhd"
         number="$("$ATT" lsblk --json | "$PY" -c 'import json, sys; print([d["id"] for d in json.load(sys.stdin) if d["virtual_disk"]][-1])')"
         step surface "$number"
         printf '%s\n' "$number" | "$ATT" surface --write --force "$number"
-        printf 'select vdisk file="%s"\ndetach vdisk\n' "$vhd" > "$scan_dir/detach.txt"
-        diskpart_script "$scan_dir/detach.txt" > "$scan_dir/detach.log" || { cat "$scan_dir/detach.log"; "$ATT" lsblk; exit 1; }
+        vhd_detach "$scan_dir/scan.vhd"
         ;;
 esac
 rm -rf "$scan_dir"
@@ -335,15 +345,12 @@ case "$(uname -s)" in
         test "$(hash_of "$probe_dir/probe.img")" = "$before"
         ;;
     *)
-        vhd="$(cygpath -w "$probe_dir/probe.vhd")"
-        printf 'create vdisk file="%s" maximum=64 type=fixed\nselect vdisk file="%s"\nattach vdisk\n' "$vhd" "$vhd" > "$probe_dir/attach.txt"
-        diskpart_script "$probe_dir/attach.txt" > "$probe_dir/diskpart.log" || { cat "$probe_dir/diskpart.log"; exit 1; }
+        vhd_attach "$probe_dir/probe.vhd"
         number="$("$ATT" lsblk --json | "$PY" -c 'import json, sys; print([d["id"] for d in json.load(sys.stdin) if d["virtual_disk"]][-1])')"
         echo "::group::att probe $number"
         printf '%s\n' "$number" | "$ATT" probe --force "$number"
         echo "::endgroup::"
-        printf 'select vdisk file="%s"\ndetach vdisk\n' "$vhd" > "$probe_dir/detach.txt"
-        diskpart_script "$probe_dir/detach.txt" > "$probe_dir/detach.log" || { cat "$probe_dir/detach.log"; "$ATT" lsblk; exit 1; }
+        vhd_detach "$probe_dir/probe.vhd"
         ;;
 esac
 rm -rf "$probe_dir"
