@@ -149,3 +149,10 @@ case "$(uname -s)" in
         ;;
     *) step wifi ;;
 esac
+
+# netquality needs the internet and a server that answers. A failure of the
+# network is not a failure of att, so this step prints its result and does
+# not stop the script.
+echo "::group::att netquality --time 2 --connections 2"
+"$ATT" netquality --time 2 --connections 2 || echo "att netquality did not complete. This step does not gate."
+echo "::endgroup::"
