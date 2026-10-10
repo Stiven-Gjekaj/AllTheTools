@@ -77,3 +77,7 @@ case "${CI:-}-$(uname -s)" in
         test "$("$ATT" clip paste)" = "att smoke $$"
         ;;
 esac
+
+# awake holds the system awake for one second, and for one short command.
+step awake --time 1
+step awake --display true
