@@ -40,6 +40,61 @@ pub fn text(program: &str, args: &[&str], hint: Option<&str>) -> Result<String> 
     String::from_utf8(bytes).with_context(|| format!("`{program}` wrote text that is not UTF-8"))
 }
 
+/// True when a program with this name is in a directory of PATH.
+///
+/// Windows also tries each suffix of PATHEXT, as its shell does.
+pub fn on_path(program: &str) -> bool {
+    let Some(path) = std::env::var_os("PATH") else {
+        return false;
+    };
+    let suffixes: Vec<String> = if cfg!(windows) {
+        std::env::var("PATHEXT")
+            .unwrap_or_else(|_| ".EXE;.CMD;.BAT".to_owned())
+            .split(';')
+            .map(str::to_owned)
+            .chain(std::iter::once(String::new()))
+            .collect()
+    } else {
+        vec![String::new()]
+    };
+    std::env::split_paths(&path).any(|dir| {
+        suffixes
+            .iter()
+            .any(|suffix| dir.join(format!("{program}{suffix}")).is_file())
+    })
+}
+
+/// Run a program, give it `input` on its input stream, and wait for it.
+pub fn feed(program: &str, args: &[&str], input: &[u8], hint: Option<&str>) -> Result<()> {
+    use std::io::Write;
+    let child = Command::new(program)
+        .args(args)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::null())
+        .stderr(Stdio::piped())
+        .spawn();
+    let mut child = match child {
+        Ok(child) => child,
+        Err(e) if e.kind() == ErrorKind::NotFound => match hint {
+            Some(hint) => bail!("this host has no `{program}`. {hint}"),
+            None => bail!("this host has no `{program}`"),
+        },
+        Err(e) => return Err(e).with_context(|| format!("could not start `{program}`")),
+    };
+    if let Some(mut stdin) = child.stdin.take() {
+        stdin
+            .write_all(input)
+            .with_context(|| format!("could not write to `{program}`"))?;
+    }
+    let out = child.wait_with_output()?;
+    if !out.status.success() {
+        let stderr = String::from_utf8_lossy(&out.stderr);
+        let first = stderr.lines().find(|l| !l.trim().is_empty()).unwrap_or("");
+        bail!("`{program}` failed ({}): {}", out.status, first.trim());
+    }
+    Ok(())
+}
+
 /// Run a PowerShell script on Windows, and give its output as text.
 ///
 /// The script sets the output encoding to UTF-8 first, so a name in any
@@ -61,7 +116,14 @@ pub fn powershell(script: &str) -> Result<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::output;
+    use super::{on_path, output};
+
+    #[test]
+    fn on_path_finds_a_program_of_the_host_and_not_a_made_up_one() {
+        let shell = if cfg!(windows) { "cmd" } else { "sh" };
+        assert!(on_path(shell));
+        assert!(!on_path("att-no-such-program"));
+    }
 
     #[test]
     fn a_missing_program_gives_an_error_that_names_it() {
