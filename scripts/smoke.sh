@@ -179,3 +179,25 @@ step lsblk --drives
     echo "att lsblk found no system drive on this runner" >&2
     exit 1
 }
+
+# eject refuses the system drive on each host. On macOS it also ejects a
+# disk image that this script makes and attaches.
+PY=python3
+command -v python3 >/dev/null 2>&1 || PY=python
+system="$("$ATT" lsblk --json | "$PY" -c 'import json, sys; print(next(d["id"] for d in json.load(sys.stdin) if d["system"]))')"
+if out="$("$ATT" eject "$system" 2>&1)"; then
+    echo "att eject took the system drive $system: $out" >&2
+    exit 1
+fi
+echo "$out" | grep -q "running system"
+if [ "$(uname -s)" = Darwin ]; then
+    image_dir="$(mktemp -d)"
+    hdiutil create -quiet -size 64m -fs MS-DOS -volname ATTSMOKE "$image_dir/smoke.dmg"
+    device="$(hdiutil attach -nobrowse "$image_dir/smoke.dmg" | awk '/ATTSMOKE/ { print $1 }')"
+    step eject "$device"
+    if hdiutil info | grep -q "$image_dir/smoke.dmg"; then
+        echo "att eject left the image attached" >&2
+        exit 1
+    fi
+    rm -rf "$image_dir"
+fi
