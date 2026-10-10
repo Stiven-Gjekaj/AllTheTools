@@ -28,6 +28,9 @@ pub enum Command {
     Lspci(tools::lspci::Args),
     /// List the USB devices.
     Lsusb(tools::lsusb::Args),
+    /// Show the temperatures, the fans and the voltages that the host
+    /// reports.
+    Sensors(tools::sensors::Args),
     /// Run a command, and stop it when its time runs out.
     Timeout(tools::timeout::Args),
     /// Remove the download mark from files, so the system starts them
