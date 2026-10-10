@@ -201,3 +201,39 @@ if [ "$(uname -s)" = Darwin ]; then
     fi
     rm -rf "$image_dir"
 fi
+
+# mount attaches an image that this script makes with the tools of the
+# host, reads a file back through the mount, and detaches it.
+image_dir="$(mktemp -d)"
+case "$(uname -s)" in
+    Darwin)
+        mkdir "$image_dir/tree"
+        echo "att smoke" > "$image_dir/tree/check.txt"
+        hdiutil makehybrid -quiet -iso -joliet -default-volume-name ATTISO -o "$image_dir/smoke.iso" "$image_dir/tree"
+        step mount "$image_dir/smoke.iso"
+        grep -q "att smoke" /Volumes/ATTISO/check.txt
+        step mount --detach "$image_dir/smoke.iso"
+        ;;
+    Linux)
+        # A runner has no udisks, so att mount takes the path of root.
+        truncate -s 32M "$image_dir/smoke.img"
+        mkfs.ext4 -q "$image_dir/smoke.img"
+        echo "::group::sudo att mount"
+        sudo "$ATT" mount "$image_dir/smoke.img"
+        echo "::endgroup::"
+        mountpoint="$(findmnt -n -o TARGET -S "$(losetup -j "$image_dir/smoke.img" | cut -d: -f1)")"
+        test -n "$mountpoint"
+        echo "::group::sudo att mount --detach"
+        sudo "$ATT" mount --detach "$image_dir/smoke.img"
+        echo "::endgroup::"
+        test -z "$(losetup -j "$image_dir/smoke.img")"
+        ;;
+    *)
+        vhd="$(cygpath -w "$image_dir/smoke.vhd")"
+        printf 'create vdisk file="%s" maximum=16 type=fixed\nselect vdisk file="%s"\nattach vdisk\ncreate partition primary\nformat fs=fat32 quick label=ATTVHD\ndetach vdisk\n' "$vhd" "$vhd" > "$image_dir/make.txt"
+        diskpart /s "$(cygpath -w "$image_dir/make.txt")" > /dev/null
+        step mount "$image_dir/smoke.vhd"
+        step mount --detach "$image_dir/smoke.vhd"
+        ;;
+esac
+rm -rf "$image_dir"
