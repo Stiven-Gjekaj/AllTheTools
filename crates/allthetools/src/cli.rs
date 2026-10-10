@@ -28,6 +28,9 @@ pub enum Command {
     Lspci(tools::lspci::Args),
     /// List the USB devices.
     Lsusb(tools::lsusb::Args),
+    /// Measure the download, the upload and the responsiveness of the
+    /// network.
+    Netquality(tools::netquality::Args),
     /// Show the temperatures, the fans and the voltages that the host
     /// reports.
     Sensors(tools::sensors::Args),
