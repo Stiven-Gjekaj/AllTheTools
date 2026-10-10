@@ -14,6 +14,7 @@ pub mod netquality;
 pub mod sensors;
 pub mod timeout;
 pub mod unquarantine;
+pub mod whoholds;
 pub mod whoport;
 pub mod wifi;
 pub mod wol;
