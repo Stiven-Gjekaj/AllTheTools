@@ -54,7 +54,8 @@ fn text(value: Option<&str>) -> Option<String> {
 /// Find the drive that a person names. Each form that a tool of the host
 /// shows is accepted: `sdb` and `/dev/sdb`, `disk4`, `/dev/disk4` and
 /// `/dev/rdisk4`, `2`, `PhysicalDrive2` and `\\.\PhysicalDrive2`. A name of a
-/// partition gives the drive that holds it.
+/// partition, or its mount point such as `/Volumes/STICK` or `E:`, gives the
+/// drive that holds it.
 pub fn select<'a>(disks: &'a [Disk], name: &str) -> Result<&'a Disk> {
     let name = name.trim();
     let bare = name
@@ -63,6 +64,15 @@ pub fn select<'a>(disks: &'a [Disk], name: &str) -> Result<&'a Disk> {
         .trim_start_matches("/dev/");
     let lower = bare.to_ascii_lowercase();
     let bare = lower.strip_prefix("physicaldrive").unwrap_or(&lower);
+    let point = name.trim_end_matches(['/', '\\']);
+    let mounted_at = |disk: &Disk| {
+        disk.partitions.iter().any(|p| {
+            p.mount.as_deref().is_some_and(|m| {
+                let m = m.trim_end_matches(['/', '\\']);
+                !m.is_empty() && m.eq_ignore_ascii_case(point)
+            })
+        })
+    };
     let matches = |disk: &Disk| {
         disk.id.eq_ignore_ascii_case(bare)
             || disk.path.eq_ignore_ascii_case(name)
@@ -73,7 +83,11 @@ pub fn select<'a>(disks: &'a [Disk], name: &str) -> Result<&'a Disk> {
                 .any(|p| p.id.eq_ignore_ascii_case(bare) || p.path.eq_ignore_ascii_case(name))
                 && !disk.partitions.iter().any(|p| p.id.parse::<u32>().is_ok())
     };
-    match disks.iter().find(|d| matches(d)) {
+    match disks
+        .iter()
+        .find(|d| matches(d))
+        .or_else(|| disks.iter().find(|d| mounted_at(d)))
+    {
         Some(disk) => Ok(disk),
         None => anyhow::bail!("no drive has the name `{name}`. `att lsblk` lists the drives"),
     }
