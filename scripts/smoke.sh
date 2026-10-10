@@ -295,3 +295,49 @@ case "$(uname -s)" in
         ;;
 esac
 rm -rf "$scan_dir"
+
+# probe tests an image of random bytes, and the image must hold the same
+# bytes after the test. Linux and macOS do the same on a block device that
+# backs the file, and Windows on an attached VHD.
+hash_of() {
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256sum "$1" | cut -d' ' -f1
+    else
+        shasum -a 256 "$1" | cut -d' ' -f1
+    fi
+}
+probe_dir="$(mktemp -d)"
+head -c 67108864 /dev/urandom > "$probe_dir/probe.img"
+before="$(hash_of "$probe_dir/probe.img")"
+printf 'probe.img\n' | "$ATT" probe "$probe_dir/probe.img"
+test "$(hash_of "$probe_dir/probe.img")" = "$before"
+case "$(uname -s)" in
+    Linux)
+        loop="$(sudo losetup --find --show "$probe_dir/probe.img")"
+        echo "::group::sudo att probe $loop"
+        printf '%s\n' "${loop#/dev/}" | sudo "$ATT" probe --force "$loop"
+        echo "::endgroup::"
+        sudo losetup --detach "$loop"
+        test "$(hash_of "$probe_dir/probe.img")" = "$before"
+        ;;
+    Darwin)
+        device="$(hdiutil attach -nobrowse -nomount -imagekey diskimage-class=CRawDiskImage "$probe_dir/probe.img" | awk 'NR == 1 { print $1 }')"
+        echo "::group::att probe $device"
+        printf '%s\n' "${device#/dev/}" | "$ATT" probe "$device"
+        echo "::endgroup::"
+        hdiutil detach "$device" > /dev/null
+        test "$(hash_of "$probe_dir/probe.img")" = "$before"
+        ;;
+    *)
+        vhd="$(cygpath -w "$probe_dir/probe.vhd")"
+        printf 'create vdisk file="%s" maximum=64 type=fixed\nselect vdisk file="%s"\nattach vdisk\n' "$vhd" "$vhd" > "$probe_dir/attach.txt"
+        diskpart /s "$(cygpath -w "$probe_dir/attach.txt")" > "$probe_dir/diskpart.log" || { cat "$probe_dir/diskpart.log"; exit 1; }
+        number="$("$ATT" lsblk --json | "$PY" -c 'import json, sys; print([d["id"] for d in json.load(sys.stdin) if d["virtual_disk"]][-1])')"
+        echo "::group::att probe $number"
+        printf '%s\n' "$number" | "$ATT" probe --force "$number"
+        echo "::endgroup::"
+        printf 'select vdisk file="%s"\ndetach vdisk\n' "$vhd" > "$probe_dir/detach.txt"
+        diskpart /s "$(cygpath -w "$probe_dir/detach.txt")" > /dev/null
+        ;;
+esac
+rm -rf "$probe_dir"
