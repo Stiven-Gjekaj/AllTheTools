@@ -135,3 +135,17 @@ if "$ATT" whoport "$port" >/dev/null 2>&1; then
     kill "$server" 2>/dev/null || true
     exit 1
 fi
+
+# wifi scans. A runner has no Wi-Fi card, and the tool says so. A Linux
+# runner has no NetworkManager, and the tool names the package.
+case "$(uname -s)" in
+    Linux)
+        if out="$("$ATT" wifi 2>&1)"; then
+            echo "$out"
+        else
+            echo "$out"
+            echo "$out" | grep -q "NetworkManager"
+        fi
+        ;;
+    *) step wifi ;;
+esac
