@@ -351,3 +351,15 @@ rm -rf "$probe_dir"
 # ddc lists the monitors that answer. A runner has none, and the tool says
 # so.
 step ddc list
+
+# link makes the familiar names in a directory of this script, runs one of
+# them, and removes them all.
+link_dir="$(mktemp -d)"
+step link "$link_dir"
+case "$(uname -s)" in
+    Linux | Darwin) "$link_dir/wakeonlan" --broadcast 127.0.0.1 aa:bb:cc:dd:ee:ff ;;
+    *) MSYS_NO_PATHCONV=1 cmd /c "$(cygpath -w "$link_dir/wakeonlan.cmd")" --broadcast 127.0.0.1 aa:bb:cc:dd:ee:ff ;;
+esac
+step link --remove "$link_dir"
+test -z "$(ls -A "$link_dir")"
+rm -rf "$link_dir"
