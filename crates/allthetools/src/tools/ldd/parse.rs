@@ -147,6 +147,49 @@ pub fn elf_kind(head: &[u8]) -> Option<Kind> {
     Some(Kind::Elf { is_64, machine })
 }
 
+/// Read the directories of /etc/ld.so.conf, in order.
+///
+/// `include` gets the pattern of each `include` line and gives the text of
+/// each file that the pattern names. A loop of includes stops after eight
+/// levels.
+pub fn ld_so_conf(text: &str, include: &mut dyn FnMut(&str) -> Vec<String>) -> Vec<String> {
+    let mut dirs = Vec::new();
+    conf_into(text, include, &mut dirs, 0);
+    dirs
+}
+
+fn conf_into(
+    text: &str,
+    include: &mut dyn FnMut(&str) -> Vec<String>,
+    dirs: &mut Vec<String>,
+    depth: usize,
+) {
+    if depth > 8 {
+        return;
+    }
+    for line in text.lines() {
+        let line = line.split('#').next().unwrap_or("").trim();
+        if line.is_empty() || line.starts_with("hwcap ") {
+            continue;
+        }
+        if let Some(pattern) = line.strip_prefix("include")
+            && pattern.starts_with(char::is_whitespace)
+        {
+            for pattern in pattern.split_whitespace() {
+                for text in include(pattern) {
+                    conf_into(&text, include, dirs, depth + 1);
+                }
+            }
+            continue;
+        }
+        for dir in line.split([' ', '\t', ',', ':']).filter(|d| !d.is_empty()) {
+            if !dirs.iter().any(|known| known == dir) {
+                dirs.push(dir.to_owned());
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -189,6 +232,42 @@ mod tests {
     #[test]
     fn a_search_path_splits_at_each_colon() {
         assert_eq!(split_paths(&["/a:/b", "", "/c::"]), ["/a", "/b", "/c"]);
+    }
+
+    #[test]
+    fn ld_so_conf_follows_each_include_in_order() {
+        let main = "# the main file\ninclude /etc/ld.so.conf.d/*.conf\n/usr/local/lib\n";
+        let mut patterns = Vec::new();
+        let dirs = ld_so_conf(main, &mut |pattern| {
+            patterns.push(pattern.to_owned());
+            vec![
+                "/usr/lib/x86_64-linux-gnu\n/lib/x86_64-linux-gnu  # multiarch\n".to_owned(),
+                "/usr/local/lib\n".to_owned(),
+            ]
+        });
+        assert_eq!(patterns, ["/etc/ld.so.conf.d/*.conf"]);
+        assert_eq!(
+            dirs,
+            [
+                "/usr/lib/x86_64-linux-gnu",
+                "/lib/x86_64-linux-gnu",
+                "/usr/local/lib"
+            ]
+        );
+    }
+
+    #[test]
+    fn ld_so_conf_stops_a_loop_of_includes() {
+        let dirs = ld_so_conf("include self\n/a\n", &mut |_| {
+            vec!["include self\n/a\n".to_owned()]
+        });
+        assert_eq!(dirs, ["/a"]);
+    }
+
+    #[test]
+    fn a_directory_named_include_something_is_a_directory() {
+        let dirs = ld_so_conf("/includes\n", &mut |_| Vec::new());
+        assert_eq!(dirs, ["/includes"]);
     }
 
     #[test]
