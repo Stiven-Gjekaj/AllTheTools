@@ -73,6 +73,33 @@ pub fn hdiutil(bytes: &[u8]) -> Result<Vec<Attached>> {
     Ok(out)
 }
 
+/// Find the whole device of an attached image in `hdiutil info -plist`. The
+/// path of the image must be the full path, as hdiutil keeps it.
+pub fn hdiutil_device(bytes: &[u8], image: &str) -> Result<Option<String>> {
+    let value = plist::Value::from_reader_xml(bytes)
+        .context("hdiutil gave a property list that is not valid")?;
+    let images = value
+        .as_dictionary()
+        .and_then(|d| d.get("images"))
+        .and_then(plist::Value::as_array);
+    for entry in images.into_iter().flatten() {
+        let Some(d) = entry.as_dictionary() else {
+            continue;
+        };
+        if d.get("image-path").and_then(plist::Value::as_string) != Some(image) {
+            continue;
+        }
+        let devices = d
+            .get("system-entities")
+            .and_then(plist::Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(|e| e.as_dictionary()?.get("dev-entry")?.as_string());
+        return Ok(devices.min_by_key(|d| d.len()).map(str::to_owned));
+    }
+    Ok(None)
+}
+
 /// Read the device of `udisksctl loop-setup`, which writes
 /// "Mapped file /path/x.iso as /dev/loop0."
 pub fn udisks_loop(text: &str) -> Option<String> {
@@ -169,6 +196,37 @@ mod tests {
         assert_eq!(attached[0].mount, None);
         assert_eq!(attached[1].mount.as_deref(), Some("/Volumes/ATTTEST"));
         assert_eq!(attached[1].filesystem.as_deref(), Some("msdos"));
+    }
+
+    // The shape of `hdiutil info -plist` on macOS, with one image and the
+    // keys that the parser reads.
+    const INFO: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>images</key>
+	<array>
+		<dict>
+			<key>image-path</key><string>/Users/me/test.dmg</string>
+			<key>system-entities</key>
+			<array>
+				<dict><key>dev-entry</key><string>/dev/disk4s1</string><key>mount-point</key><string>/Volumes/ATTTEST</string></dict>
+				<dict><key>dev-entry</key><string>/dev/disk4</string></dict>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>"#;
+
+    #[test]
+    fn hdiutil_device_finds_the_whole_device_of_an_image() {
+        assert_eq!(
+            hdiutil_device(INFO.as_bytes(), "/Users/me/test.dmg")
+                .unwrap()
+                .as_deref(),
+            Some("/dev/disk4")
+        );
+        assert_eq!(hdiutil_device(INFO.as_bytes(), "/other.dmg").unwrap(), None);
     }
 
     #[test]
