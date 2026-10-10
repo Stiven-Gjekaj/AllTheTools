@@ -15,6 +15,9 @@ pub struct Cli {
 /// One tool of AllTheTools.
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Keep the system awake for a time, while a process runs, or while a
+    /// command runs.
+    Awake(tools::awake::Args),
     /// Copy text to the clipboard, and paste it.
     Clip(tools::clip::Args),
     /// List the libraries that a binary needs, and where each one is.

@@ -15,6 +15,7 @@ authors = ["Stiven Gjekaj <stivenagostingjekaj@gmail.com>"]
 [workspace.dependencies]
 anyhow = "=1.0.104"
 clap = { version = "=4.6.6", features = ["derive"] }
+core-foundation = "=0.10.1"
 goblin = "=0.10.7"
 libc = "=0.2.190"
 serde = { version = "=1.0.229", features = ["derive"] }
