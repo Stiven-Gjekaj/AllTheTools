@@ -297,7 +297,7 @@ case "$(uname -s)" in
         step surface "$number"
         printf '%s\n' "$number" | "$ATT" surface --write --force "$number"
         printf 'select vdisk file="%s"\ndetach vdisk\n' "$vhd" > "$scan_dir/detach.txt"
-        diskpart_script "$scan_dir/detach.txt" > /dev/null
+        diskpart_script "$scan_dir/detach.txt" > "$scan_dir/detach.log" || { cat "$scan_dir/detach.log"; "$ATT" lsblk; exit 1; }
         ;;
 esac
 rm -rf "$scan_dir"
@@ -343,7 +343,7 @@ case "$(uname -s)" in
         printf '%s\n' "$number" | "$ATT" probe --force "$number"
         echo "::endgroup::"
         printf 'select vdisk file="%s"\ndetach vdisk\n' "$vhd" > "$probe_dir/detach.txt"
-        diskpart_script "$probe_dir/detach.txt" > /dev/null
+        diskpart_script "$probe_dir/detach.txt" > "$probe_dir/detach.log" || { cat "$probe_dir/detach.log"; "$ATT" lsblk; exit 1; }
         ;;
 esac
 rm -rf "$probe_dir"
