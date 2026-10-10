@@ -29,6 +29,7 @@ pub fn run() -> i32 {
         Command::Lsblk(args) => tools::lsblk::run(args),
         Command::Lspci(args) => tools::lspci::run(args),
         Command::Lsusb(args) => tools::lsusb::run(args),
+        Command::Mount(args) => tools::mount::run(args),
         Command::Netquality(args) => tools::netquality::run(args),
         Command::Sensors(args) => tools::sensors::run(args),
         Command::Timeout(args) => tools::timeout::run(args),

@@ -32,6 +32,8 @@ pub enum Command {
     Lspci(tools::lspci::Args),
     /// List the USB devices.
     Lsusb(tools::lsusb::Args),
+    /// Attach a disk image and mount its volumes, or detach it.
+    Mount(tools::mount::Args),
     /// Measure the download, the upload and the responsiveness of the
     /// network.
     Netquality(tools::netquality::Args),
