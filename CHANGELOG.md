@@ -8,7 +8,11 @@ Every release is written here, newest first. A version is `MAJOR.MINOR.PATCH`.
 
 ## Unreleased
 
-The first version, 0.1.0, with twenty tools in one binary, `att`:
+Nothing yet.
+
+## 0.1.0 (2026-10-10)
+
+The first version, with twenty tools in one binary, `att`:
 
 - Drives: `probe`, `surface`, `lsblk`, `eject`, `mount` and `whoholds`.
 - Hardware: `lsusb`, `lspci`, `sensors`, `battery` and `ddc`.
