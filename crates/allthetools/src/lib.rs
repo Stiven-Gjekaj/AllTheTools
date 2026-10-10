@@ -5,6 +5,7 @@
 
 use clap::Parser;
 
+pub mod alias;
 pub mod cli;
 pub mod disks;
 pub mod host;
@@ -19,9 +20,10 @@ use cli::{Cli, Command};
 
 /// Run the command that the person typed, and give the exit code.
 ///
-/// An error prints one line on the error stream and gives exit code 1.
+/// A start under a familiar name, such as lsusb, runs that tool. An error
+/// prints one line on the error stream and gives exit code 1.
 pub fn run() -> i32 {
-    let cli = Cli::parse();
+    let cli = Cli::parse_from(alias::expand(std::env::args_os().collect()));
     let result: anyhow::Result<i32> = match cli.command {
         Command::Awake(args) => tools::awake::run(args),
         Command::Battery(args) => tools::battery::run(args),
