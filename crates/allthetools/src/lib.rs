@@ -34,6 +34,7 @@ pub fn run() -> i32 {
         Command::Mount(args) => tools::mount::run(args),
         Command::Netquality(args) => tools::netquality::run(args),
         Command::Sensors(args) => tools::sensors::run(args),
+        Command::Surface(args) => tools::surface::run(args),
         Command::Timeout(args) => tools::timeout::run(args),
         Command::Unquarantine(args) => tools::unquarantine::run(args),
         Command::Whoholds(args) => tools::whoholds::run(args),

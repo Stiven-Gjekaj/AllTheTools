@@ -40,6 +40,8 @@ pub enum Command {
     /// Show the temperatures, the fans and the voltages that the host
     /// reports.
     Sensors(tools::sensors::Args),
+    /// Read each sector of a drive, and name the sectors that fail.
+    Surface(tools::surface::Args),
     /// Run a command, and stop it when its time runs out.
     Timeout(tools::timeout::Args),
     /// Remove the download mark from files, so the system starts them
