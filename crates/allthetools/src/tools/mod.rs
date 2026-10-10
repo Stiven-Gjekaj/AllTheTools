@@ -12,6 +12,7 @@ pub mod lsusb;
 pub mod mount;
 pub mod netquality;
 pub mod sensors;
+pub mod surface;
 pub mod timeout;
 pub mod unquarantine;
 pub mod whoholds;
