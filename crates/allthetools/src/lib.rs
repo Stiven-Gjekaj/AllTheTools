@@ -20,6 +20,7 @@ pub fn run() -> i32 {
     let cli = Cli::parse();
     let result: anyhow::Result<i32> = match cli.command {
         Command::Timeout(args) => tools::timeout::run(args),
+        Command::Wol(args) => tools::wol::run(args),
     };
     match result {
         Ok(code) => code,

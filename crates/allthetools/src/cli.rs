@@ -17,6 +17,8 @@ pub struct Cli {
 pub enum Command {
     /// Run a command, and stop it when its time runs out.
     Timeout(tools::timeout::Args),
+    /// Wake a computer on the local network with a magic packet.
+    Wol(tools::wol::Args),
 }
 
 #[cfg(test)]
@@ -41,7 +43,9 @@ mod tests {
     #[test]
     fn timeout_keeps_the_options_of_the_command() {
         let cli = Cli::try_parse_from(["att", "timeout", "-s", "KILL", "5", "ls", "-la"]).unwrap();
-        let super::Command::Timeout(args) = cli.command;
+        let super::Command::Timeout(args) = cli.command else {
+            panic!("not timeout");
+        };
         assert_eq!(args.signal, "KILL");
         assert_eq!(args.duration, "5");
         assert_eq!(args.command, ["ls", "-la"]);
