@@ -156,3 +156,12 @@ esac
 echo "::group::att netquality --time 2 --connections 2"
 "$ATT" netquality --time 2 --connections 2 || echo "att netquality did not complete. This step does not gate."
 echo "::endgroup::"
+
+# lsblk lists the drives. Each runner has a system drive, and the list must
+# mark it.
+step lsblk
+step lsblk --drives
+"$ATT" lsblk --json | grep -q '"system":true' || {
+    echo "att lsblk found no system drive on this runner" >&2
+    exit 1
+}
