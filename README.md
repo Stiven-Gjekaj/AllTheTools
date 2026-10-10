@@ -117,8 +117,8 @@ sudo dnf install ./allthetools-0.1.0-1.x86_64.rpm
 Or download the binary for your host from the
 [latest release](https://github.com/Stiven-Gjekaj/AllTheTools/releases/latest).
 The Linux binary carries its own C library, so it runs on any distribution,
-Arch Linux too. The Windows binary carries the Microsoft C runtime, so neither
-needs anything installed beside it.
+Arch Linux too. The Windows binary carries the Microsoft C runtime. So neither
+binary needs anything installed beside it.
 [docs/releasing.md](docs/releasing.md) says how to check a download against
 `SHA256SUMS` and against its build provenance.
 
