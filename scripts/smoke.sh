@@ -13,6 +13,13 @@ set -euo pipefail
 
 ATT="${1:?usage: smoke.sh <path to att>}"
 
+# The file of the binary. Windows adds .exe, and a shell finds it without the
+# suffix, but a tool that reads the file needs the full name.
+BIN="$ATT"
+if [ -f "$ATT.exe" ]; then
+    BIN="$ATT.exe"
+fi
+
 step() {
     echo "::group::att $*"
     "$ATT" "$@"
@@ -32,3 +39,7 @@ if [ "$code" != 124 ]; then
     echo "att timeout gave $code for a command past its time, and not 124" >&2
     exit 1
 fi
+
+# ldd reads the binary of att itself, which the loader of the host found.
+step ldd "$BIN"
+step ldd --tree --json "$BIN"
