@@ -62,9 +62,11 @@ step unquarantine "$mark_dir/download"
 rm -rf "$mark_dir"
 
 # clip copies a line and pastes it back. A Linux runner has no desktop
-# session and so no clipboard, and the tool says so.
-case "$(uname -s)" in
-    Linux)
+# session and so no clipboard, and the tool says so. The check runs only in
+# CI, so a run on the computer of a person does not replace their clipboard.
+case "${CI:-}-$(uname -s)" in
+    -*) ;;
+    *-Linux)
         if "$ATT" clip paste; then
             echo "att clip pasted with no desktop session" >&2
             exit 1
