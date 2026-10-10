@@ -2,6 +2,7 @@
 //! into another one.
 
 pub mod awake;
+pub mod battery;
 pub mod clip;
 pub mod ldd;
 pub mod lspci;
