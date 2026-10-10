@@ -108,3 +108,8 @@ step lspci --json
 # battery reads the batteries. A runner has none, and the tool says so.
 step battery
 step battery --json
+
+# sensors reads what the host gives to a standard user. A virtual machine
+# can have no sensor, and the tool says so.
+step sensors
+step sensors --json
