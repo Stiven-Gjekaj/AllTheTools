@@ -7,6 +7,7 @@ pub mod clip;
 pub mod ddc;
 pub mod eject;
 pub mod ldd;
+pub mod link;
 pub mod lsblk;
 pub mod lspci;
 pub mod lsusb;

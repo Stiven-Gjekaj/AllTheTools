@@ -29,6 +29,8 @@ pub enum Command {
     Eject(tools::eject::Args),
     /// List the libraries that a binary needs, and where each one is.
     Ldd(tools::ldd::Args),
+    /// Make the familiar names, such as lsusb and f3probe, run att.
+    Link(tools::link::Args),
     /// List the drives and their partitions as a tree.
     Lsblk(tools::lsblk::Args),
     /// List the PCI devices.
