@@ -22,6 +22,8 @@ pub enum Command {
     Battery(tools::battery::Args),
     /// Copy text to the clipboard, and paste it.
     Clip(tools::clip::Args),
+    /// Unmount each volume of a drive, and make the drive safe to remove.
+    Eject(tools::eject::Args),
     /// List the libraries that a binary needs, and where each one is.
     Ldd(tools::ldd::Args),
     /// List the drives and their partitions as a tree.

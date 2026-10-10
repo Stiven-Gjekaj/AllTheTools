@@ -24,6 +24,7 @@ pub fn run() -> i32 {
         Command::Awake(args) => tools::awake::run(args),
         Command::Battery(args) => tools::battery::run(args),
         Command::Clip(args) => tools::clip::run(args),
+        Command::Eject(args) => tools::eject::run(args),
         Command::Ldd(args) => tools::ldd::run(args),
         Command::Lsblk(args) => tools::lsblk::run(args),
         Command::Lspci(args) => tools::lspci::run(args),
