@@ -11,6 +11,7 @@ use anyhow::Result;
 
 pub mod blocks;
 pub mod file;
+pub mod guard;
 
 #[cfg(target_os = "linux")]
 mod linux;
