@@ -30,6 +30,7 @@ pub fn run() -> i32 {
         Command::Timeout(args) => tools::timeout::run(args),
         Command::Unquarantine(args) => tools::unquarantine::run(args),
         Command::Whoport(args) => tools::whoport::run(args),
+        Command::Wifi(args) => tools::wifi::run(args),
         Command::Wol(args) => tools::wol::run(args),
     };
     match result {

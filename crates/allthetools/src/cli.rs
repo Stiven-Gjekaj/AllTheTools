@@ -38,6 +38,8 @@ pub enum Command {
     Unquarantine(tools::unquarantine::Args),
     /// Show which process listens on a port, and stop it when asked.
     Whoport(tools::whoport::Args),
+    /// List the Wi-Fi networks near this computer, the strongest first.
+    Wifi(tools::wifi::Args),
     /// Wake a computer on the local network with a magic packet.
     Wol(tools::wol::Args),
 }
