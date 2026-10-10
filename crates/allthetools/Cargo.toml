@@ -1,0 +1,23 @@
+[package]
+name = "allthetools"
+description = "The same small tools on Windows, on macOS and on Linux, in one binary."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+readme = "../../README.md"
+keywords = ["cli", "cross-platform", "lsusb", "lsblk", "f3probe"]
+categories = ["command-line-utilities", "hardware-support"]
+
+[[bin]]
+name = "att"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+
+[lints]
+workspace = true
