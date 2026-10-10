@@ -6,6 +6,8 @@
 use clap::Parser;
 
 pub mod cli;
+pub mod size;
+pub mod table;
 
 use cli::{Cli, Command};
 
