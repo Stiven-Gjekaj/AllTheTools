@@ -1,0 +1,457 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 967 168" width="967" height="168" role="img" aria-label="AllTheTools">
+  <title>AllTheTools</title>
+  <!-- scripts/make-banner.py writes this file. Change the script. -->
+  <defs>
+    <linearGradient id="ink" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="890" y2="120"><stop offset="0" stop-color="#2dd4bf"/><stop offset="0.3" stop-color="#38bdf8"/><stop offset="0.6" stop-color="#818cf8"/><stop offset="0.85" stop-color="#c084fc"/><stop offset="1" stop-color="#f472b6"/></linearGradient>
+    <filter id="glow" x="-10%" y="-30%" width="120%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g transform="translate(53.9 24) skewX(-14)">
+    <g fill="none" stroke="url(#ink)" stroke-width="1.6" stroke-linejoin="miter" opacity="0.55">
+      <polyline points="60,7.4 67.6,7.4 67.6,20"/>
+      <polyline points="60,12.6 62.4,12.6 62.4,20"/>
+      <polyline points="100,7.4 107.6,7.4 107.6,20"/>
+      <polyline points="100,12.6 102.4,12.6 102.4,20"/>
+      <polyline points="180,7.4 187.6,7.4 187.6,20"/>
+      <polyline points="180,12.6 182.4,12.6 182.4,20"/>
+      <polyline points="290,7.4 297.6,7.4 297.6,20"/>
+      <polyline points="290,12.6 292.4,12.6 292.4,20"/>
+      <polyline points="320,7.4 327.6,7.4 327.6,20"/>
+      <polyline points="320,12.6 322.4,12.6 322.4,20"/>
+      <polyline points="370,7.4 377.6,7.4 377.6,20"/>
+      <polyline points="370,12.6 372.4,12.6 372.4,20"/>
+      <polyline points="450,7.4 457.6,7.4 457.6,20"/>
+      <polyline points="450,12.6 452.4,12.6 452.4,20"/>
+      <polyline points="540,7.4 547.6,7.4 547.6,20"/>
+      <polyline points="540,12.6 542.4,12.6 542.4,20"/>
+      <polyline points="620,7.4 627.6,7.4 627.6,20"/>
+      <polyline points="620,12.6 622.4,12.6 622.4,20"/>
+      <polyline points="710,7.4 717.6,7.4 717.6,20"/>
+      <polyline points="710,12.6 712.4,12.6 712.4,20"/>
+      <polyline points="750,7.4 757.6,7.4 757.6,20"/>
+      <polyline points="750,12.6 752.4,12.6 752.4,20"/>
+      <polyline points="880,7.4 887.6,7.4 887.6,20"/>
+      <polyline points="880,12.6 882.4,12.6 882.4,20"/>
+      <polyline points="30,27.4 22.4,27.4 22.4,40"/>
+      <polyline points="30,32.6 27.6,32.6 27.6,40"/>
+      <polyline points="30,27.4 40,27.4"/>
+      <polyline points="30,32.6 40,32.6"/>
+      <polyline points="40,27.4 50,27.4"/>
+      <polyline points="40,32.6 50,32.6"/>
+      <polyline points="70,27.4 77.6,27.4 77.6,40"/>
+      <polyline points="70,32.6 72.4,32.6 72.4,40"/>
+      <polyline points="102.4,20 102.4,40"/>
+      <polyline points="107.6,20 107.6,40"/>
+      <polyline points="182.4,20 182.4,40"/>
+      <polyline points="187.6,20 187.6,40"/>
+      <polyline points="220,32.6 212.4,32.6 212.4,20"/>
+      <polyline points="220,27.4 217.6,27.4 217.6,20"/>
+      <polyline points="220,27.4 230,27.4"/>
+      <polyline points="220,32.6 230,32.6"/>
+      <polyline points="230,27.4 240,27.4"/>
+      <polyline points="230,32.6 240,32.6"/>
+      <polyline points="270,27.4 262.4,27.4 262.4,40"/>
+      <polyline points="270,32.6 267.6,32.6 267.6,40"/>
+      <polyline points="270,27.4 280,27.4"/>
+      <polyline points="270,32.6 280,32.6"/>
+      <polyline points="280,27.4 290,27.4"/>
+      <polyline points="280,32.6 290,32.6"/>
+      <polyline points="290,32.6 297.6,32.6 297.6,20"/>
+      <polyline points="290,27.4 292.4,27.4 292.4,20"/>
+      <polyline points="322.4,20 322.4,40"/>
+      <polyline points="327.6,20 327.6,40"/>
+      <polyline points="372.4,20 372.4,40"/>
+      <polyline points="377.6,20 377.6,40"/>
+      <polyline points="410,27.4 402.4,27.4 402.4,40"/>
+      <polyline points="410,32.6 407.6,32.6 407.6,40"/>
+      <polyline points="410,27.4 420,27.4"/>
+      <polyline points="410,32.6 420,32.6"/>
+      <polyline points="420,27.4 430,27.4"/>
+      <polyline points="420,32.6 430,32.6"/>
+      <polyline points="430,27.4 440,27.4"/>
+      <polyline points="430,32.6 440,32.6"/>
+      <polyline points="440,27.4 450,27.4"/>
+      <polyline points="440,32.6 450,32.6"/>
+      <polyline points="450,32.6 457.6,32.6 457.6,20"/>
+      <polyline points="450,27.4 452.4,27.4 452.4,20"/>
+      <polyline points="470,32.6 462.4,32.6 462.4,20"/>
+      <polyline points="470,27.4 467.6,27.4 467.6,20"/>
+      <polyline points="470,27.4 480,27.4"/>
+      <polyline points="470,32.6 480,32.6"/>
+      <polyline points="480,27.4 490,27.4"/>
+      <polyline points="480,32.6 490,32.6"/>
+      <polyline points="520,27.4 512.4,27.4 512.4,40"/>
+      <polyline points="520,32.6 517.6,32.6 517.6,40"/>
+      <polyline points="520,27.4 530,27.4"/>
+      <polyline points="520,32.6 530,32.6"/>
+      <polyline points="530,27.4 540,27.4"/>
+      <polyline points="530,32.6 540,32.6"/>
+      <polyline points="540,32.6 547.6,32.6 547.6,20"/>
+      <polyline points="540,27.4 542.4,27.4 542.4,20"/>
+      <polyline points="580,27.4 572.4,27.4 572.4,40"/>
+      <polyline points="580,32.6 577.6,32.6 577.6,40"/>
+      <polyline points="580,27.4 590,27.4"/>
+      <polyline points="580,32.6 590,32.6"/>
+      <polyline points="590,27.4 600,27.4"/>
+      <polyline points="590,32.6 600,32.6"/>
+      <polyline points="600,27.4 610,27.4"/>
+      <polyline points="600,32.6 610,32.6"/>
+      <polyline points="630,27.4 637.6,27.4 637.6,40"/>
+      <polyline points="630,32.6 632.4,32.6 632.4,40"/>
+      <polyline points="670,27.4 662.4,27.4 662.4,40"/>
+      <polyline points="670,32.6 667.6,32.6 667.6,40"/>
+      <polyline points="670,27.4 680,27.4"/>
+      <polyline points="670,32.6 680,32.6"/>
+      <polyline points="680,27.4 690,27.4"/>
+      <polyline points="680,32.6 690,32.6"/>
+      <polyline points="690,27.4 700,27.4"/>
+      <polyline points="690,32.6 700,32.6"/>
+      <polyline points="720,27.4 727.6,27.4 727.6,40"/>
+      <polyline points="720,32.6 722.4,32.6 722.4,40"/>
+      <polyline points="752.4,20 752.4,40"/>
+      <polyline points="757.6,20 757.6,40"/>
+      <polyline points="840,27.4 832.4,27.4 832.4,40"/>
+      <polyline points="840,32.6 837.6,32.6 837.6,40"/>
+      <polyline points="840,27.4 850,27.4"/>
+      <polyline points="840,32.6 850,32.6"/>
+      <polyline points="850,27.4 860,27.4"/>
+      <polyline points="850,32.6 860,32.6"/>
+      <polyline points="860,27.4 870,27.4"/>
+      <polyline points="860,32.6 870,32.6"/>
+      <polyline points="870,27.4 880,27.4"/>
+      <polyline points="870,32.6 880,32.6"/>
+      <polyline points="880,32.6 887.6,32.6 887.6,20"/>
+      <polyline points="880,27.4 882.4,27.4 882.4,20"/>
+      <polyline points="72.4,40 72.4,60"/>
+      <polyline points="77.6,40 77.6,60"/>
+      <polyline points="102.4,40 102.4,60"/>
+      <polyline points="107.6,40 107.6,60"/>
+      <polyline points="182.4,40 182.4,60"/>
+      <polyline points="187.6,40 187.6,60"/>
+      <polyline points="262.4,40 262.4,60"/>
+      <polyline points="267.6,40 267.6,60"/>
+      <polyline points="372.4,40 372.4,60"/>
+      <polyline points="377.6,40 377.6,60"/>
+      <polyline points="430,47.4 437.6,47.4 437.6,60"/>
+      <polyline points="430,52.6 432.4,52.6 432.4,60"/>
+      <polyline points="512.4,40 512.4,60"/>
+      <polyline points="517.6,40 517.6,60"/>
+      <polyline points="572.4,40 572.4,60"/>
+      <polyline points="577.6,40 577.6,60"/>
+      <polyline points="632.4,40 632.4,60"/>
+      <polyline points="637.6,40 637.6,60"/>
+      <polyline points="662.4,40 662.4,60"/>
+      <polyline points="667.6,40 667.6,60"/>
+      <polyline points="722.4,40 722.4,60"/>
+      <polyline points="727.6,40 727.6,60"/>
+      <polyline points="752.4,40 752.4,60"/>
+      <polyline points="757.6,40 757.6,60"/>
+      <polyline points="880,47.4 887.6,47.4 887.6,60"/>
+      <polyline points="880,52.6 882.4,52.6 882.4,60"/>
+      <polyline points="30,67.4 22.4,67.4 22.4,80"/>
+      <polyline points="30,72.6 27.6,72.6 27.6,80"/>
+      <polyline points="30,67.4 40,67.4"/>
+      <polyline points="30,72.6 40,72.6"/>
+      <polyline points="40,67.4 50,67.4"/>
+      <polyline points="40,72.6 50,72.6"/>
+      <polyline points="72.4,60 72.4,80"/>
+      <polyline points="77.6,60 77.6,80"/>
+      <polyline points="102.4,60 102.4,80"/>
+      <polyline points="107.6,60 107.6,80"/>
+      <polyline points="182.4,60 182.4,80"/>
+      <polyline points="187.6,60 187.6,80"/>
+      <polyline points="262.4,60 262.4,80"/>
+      <polyline points="267.6,60 267.6,80"/>
+      <polyline points="330,67.4 322.4,67.4 322.4,80"/>
+      <polyline points="330,72.6 327.6,72.6 327.6,80"/>
+      <polyline points="330,67.4 340,67.4"/>
+      <polyline points="330,72.6 340,72.6"/>
+      <polyline points="340,67.4 350,67.4"/>
+      <polyline points="340,72.6 350,72.6"/>
+      <polyline points="372.4,60 372.4,80"/>
+      <polyline points="377.6,60 377.6,80"/>
+      <polyline points="410,67.4 402.4,67.4 402.4,80"/>
+      <polyline points="410,72.6 407.6,72.6 407.6,80"/>
+      <polyline points="410,67.4 420,67.4"/>
+      <polyline points="410,72.6 420,72.6"/>
+      <polyline points="420,67.4 430,67.4"/>
+      <polyline points="420,72.6 430,72.6"/>
+      <polyline points="430,72.6 437.6,72.6 437.6,60"/>
+      <polyline points="430,67.4 432.4,67.4 432.4,60"/>
+      <polyline points="512.4,60 512.4,80"/>
+      <polyline points="517.6,60 517.6,80"/>
+      <polyline points="572.4,60 572.4,80"/>
+      <polyline points="577.6,60 577.6,80"/>
+      <polyline points="632.4,60 632.4,80"/>
+      <polyline points="637.6,60 637.6,80"/>
+      <polyline points="662.4,60 662.4,80"/>
+      <polyline points="667.6,60 667.6,80"/>
+      <polyline points="722.4,60 722.4,80"/>
+      <polyline points="727.6,60 727.6,80"/>
+      <polyline points="752.4,60 752.4,80"/>
+      <polyline points="757.6,60 757.6,80"/>
+      <polyline points="820,72.6 812.4,72.6 812.4,60"/>
+      <polyline points="820,67.4 817.6,67.4 817.6,60"/>
+      <polyline points="820,67.4 830,67.4"/>
+      <polyline points="820,72.6 830,72.6"/>
+      <polyline points="830,67.4 840,67.4"/>
+      <polyline points="830,72.6 840,72.6"/>
+      <polyline points="840,67.4 850,67.4"/>
+      <polyline points="840,72.6 850,72.6"/>
+      <polyline points="850,67.4 860,67.4"/>
+      <polyline points="850,72.6 860,72.6"/>
+      <polyline points="882.4,60 882.4,80"/>
+      <polyline points="887.6,60 887.6,80"/>
+      <polyline points="22.4,80 22.4,100"/>
+      <polyline points="27.6,80 27.6,100"/>
+      <polyline points="72.4,80 72.4,100"/>
+      <polyline points="77.6,80 77.6,100"/>
+      <polyline points="150,87.4 157.6,87.4 157.6,100"/>
+      <polyline points="150,92.6 152.4,92.6 152.4,100"/>
+      <polyline points="230,87.4 237.6,87.4 237.6,100"/>
+      <polyline points="230,92.6 232.4,92.6 232.4,100"/>
+      <polyline points="262.4,80 262.4,100"/>
+      <polyline points="267.6,80 267.6,100"/>
+      <polyline points="322.4,80 322.4,100"/>
+      <polyline points="327.6,80 327.6,100"/>
+      <polyline points="372.4,80 372.4,100"/>
+      <polyline points="377.6,80 377.6,100"/>
+      <polyline points="450,87.4 457.6,87.4 457.6,100"/>
+      <polyline points="450,92.6 452.4,92.6 452.4,100"/>
+      <polyline points="512.4,80 512.4,100"/>
+      <polyline points="517.6,80 517.6,100"/>
+      <polyline points="560,92.6 552.4,92.6 552.4,80"/>
+      <polyline points="560,87.4 557.6,87.4 557.6,80"/>
+      <polyline points="630,87.4 622.4,87.4 622.4,100"/>
+      <polyline points="630,92.6 627.6,92.6 627.6,100"/>
+      <polyline points="630,92.6 637.6,92.6 637.6,80"/>
+      <polyline points="630,87.4 632.4,87.4 632.4,80"/>
+      <polyline points="650,92.6 642.4,92.6 642.4,80"/>
+      <polyline points="650,87.4 647.6,87.4 647.6,80"/>
+      <polyline points="720,87.4 712.4,87.4 712.4,100"/>
+      <polyline points="720,92.6 717.6,92.6 717.6,100"/>
+      <polyline points="720,92.6 727.6,92.6 727.6,80"/>
+      <polyline points="720,87.4 722.4,87.4 722.4,80"/>
+      <polyline points="800,87.4 807.6,87.4 807.6,100"/>
+      <polyline points="800,92.6 802.4,92.6 802.4,100"/>
+      <polyline points="882.4,80 882.4,100"/>
+      <polyline points="887.6,80 887.6,100"/>
+      <polyline points="10,112.6 2.4,112.6 2.4,100"/>
+      <polyline points="10,107.4 7.6,107.4 7.6,100"/>
+      <polyline points="10,107.4 20,107.4"/>
+      <polyline points="10,112.6 20,112.6"/>
+      <polyline points="20,112.6 27.6,112.6 27.6,100"/>
+      <polyline points="20,107.4 22.4,107.4 22.4,100"/>
+      <polyline points="60,112.6 52.4,112.6 52.4,100"/>
+      <polyline points="60,107.4 57.6,107.4 57.6,100"/>
+      <polyline points="60,107.4 70,107.4"/>
+      <polyline points="60,112.6 70,112.6"/>
+      <polyline points="70,112.6 77.6,112.6 77.6,100"/>
+      <polyline points="70,107.4 72.4,107.4 72.4,100"/>
+      <polyline points="90,112.6 82.4,112.6 82.4,100"/>
+      <polyline points="90,107.4 87.6,107.4 87.6,100"/>
+      <polyline points="90,107.4 100,107.4"/>
+      <polyline points="90,112.6 100,112.6"/>
+      <polyline points="100,107.4 110,107.4"/>
+      <polyline points="100,112.6 110,112.6"/>
+      <polyline points="110,107.4 120,107.4"/>
+      <polyline points="110,112.6 120,112.6"/>
+      <polyline points="120,107.4 130,107.4"/>
+      <polyline points="120,112.6 130,112.6"/>
+      <polyline points="130,107.4 140,107.4"/>
+      <polyline points="130,112.6 140,112.6"/>
+      <polyline points="140,107.4 150,107.4"/>
+      <polyline points="140,112.6 150,112.6"/>
+      <polyline points="150,112.6 157.6,112.6 157.6,100"/>
+      <polyline points="150,107.4 152.4,107.4 152.4,100"/>
+      <polyline points="170,112.6 162.4,112.6 162.4,100"/>
+      <polyline points="170,107.4 167.6,107.4 167.6,100"/>
+      <polyline points="170,107.4 180,107.4"/>
+      <polyline points="170,112.6 180,112.6"/>
+      <polyline points="180,107.4 190,107.4"/>
+      <polyline points="180,112.6 190,112.6"/>
+      <polyline points="190,107.4 200,107.4"/>
+      <polyline points="190,112.6 200,112.6"/>
+      <polyline points="200,107.4 210,107.4"/>
+      <polyline points="200,112.6 210,112.6"/>
+      <polyline points="210,107.4 220,107.4"/>
+      <polyline points="210,112.6 220,112.6"/>
+      <polyline points="220,107.4 230,107.4"/>
+      <polyline points="220,112.6 230,112.6"/>
+      <polyline points="230,112.6 237.6,112.6 237.6,100"/>
+      <polyline points="230,107.4 232.4,107.4 232.4,100"/>
+      <polyline points="250,112.6 242.4,112.6 242.4,100"/>
+      <polyline points="250,107.4 247.6,107.4 247.6,100"/>
+      <polyline points="250,107.4 260,107.4"/>
+      <polyline points="250,112.6 260,112.6"/>
+      <polyline points="260,112.6 267.6,112.6 267.6,100"/>
+      <polyline points="260,107.4 262.4,107.4 262.4,100"/>
+      <polyline points="310,112.6 302.4,112.6 302.4,100"/>
+      <polyline points="310,107.4 307.6,107.4 307.6,100"/>
+      <polyline points="310,107.4 320,107.4"/>
+      <polyline points="310,112.6 320,112.6"/>
+      <polyline points="320,112.6 327.6,112.6 327.6,100"/>
+      <polyline points="320,107.4 322.4,107.4 322.4,100"/>
+      <polyline points="360,112.6 352.4,112.6 352.4,100"/>
+      <polyline points="360,107.4 357.6,107.4 357.6,100"/>
+      <polyline points="360,107.4 370,107.4"/>
+      <polyline points="360,112.6 370,112.6"/>
+      <polyline points="370,112.6 377.6,112.6 377.6,100"/>
+      <polyline points="370,107.4 372.4,107.4 372.4,100"/>
+      <polyline points="390,112.6 382.4,112.6 382.4,100"/>
+      <polyline points="390,107.4 387.6,107.4 387.6,100"/>
+      <polyline points="390,107.4 400,107.4"/>
+      <polyline points="390,112.6 400,112.6"/>
+      <polyline points="400,107.4 410,107.4"/>
+      <polyline points="400,112.6 410,112.6"/>
+      <polyline points="410,107.4 420,107.4"/>
+      <polyline points="410,112.6 420,112.6"/>
+      <polyline points="420,107.4 430,107.4"/>
+      <polyline points="420,112.6 430,112.6"/>
+      <polyline points="430,107.4 440,107.4"/>
+      <polyline points="430,112.6 440,112.6"/>
+      <polyline points="440,107.4 450,107.4"/>
+      <polyline points="440,112.6 450,112.6"/>
+      <polyline points="450,112.6 457.6,112.6 457.6,100"/>
+      <polyline points="450,107.4 452.4,107.4 452.4,100"/>
+      <polyline points="500,112.6 492.4,112.6 492.4,100"/>
+      <polyline points="500,107.4 497.6,107.4 497.6,100"/>
+      <polyline points="500,107.4 510,107.4"/>
+      <polyline points="500,112.6 510,112.6"/>
+      <polyline points="510,112.6 517.6,112.6 517.6,100"/>
+      <polyline points="510,107.4 512.4,107.4 512.4,100"/>
+      <polyline points="570,112.6 562.4,112.6 562.4,100"/>
+      <polyline points="570,107.4 567.6,107.4 567.6,100"/>
+      <polyline points="570,107.4 580,107.4"/>
+      <polyline points="570,112.6 580,112.6"/>
+      <polyline points="580,107.4 590,107.4"/>
+      <polyline points="580,112.6 590,112.6"/>
+      <polyline points="590,107.4 600,107.4"/>
+      <polyline points="590,112.6 600,112.6"/>
+      <polyline points="600,107.4 610,107.4"/>
+      <polyline points="600,112.6 610,112.6"/>
+      <polyline points="610,107.4 620,107.4"/>
+      <polyline points="610,112.6 620,112.6"/>
+      <polyline points="620,112.6 627.6,112.6 627.6,100"/>
+      <polyline points="620,107.4 622.4,107.4 622.4,100"/>
+      <polyline points="660,112.6 652.4,112.6 652.4,100"/>
+      <polyline points="660,107.4 657.6,107.4 657.6,100"/>
+      <polyline points="660,107.4 670,107.4"/>
+      <polyline points="660,112.6 670,112.6"/>
+      <polyline points="670,107.4 680,107.4"/>
+      <polyline points="670,112.6 680,112.6"/>
+      <polyline points="680,107.4 690,107.4"/>
+      <polyline points="680,112.6 690,112.6"/>
+      <polyline points="690,107.4 700,107.4"/>
+      <polyline points="690,112.6 700,112.6"/>
+      <polyline points="700,107.4 710,107.4"/>
+      <polyline points="700,112.6 710,112.6"/>
+      <polyline points="710,112.6 717.6,112.6 717.6,100"/>
+      <polyline points="710,107.4 712.4,107.4 712.4,100"/>
+      <polyline points="740,112.6 732.4,112.6 732.4,100"/>
+      <polyline points="740,107.4 737.6,107.4 737.6,100"/>
+      <polyline points="740,107.4 750,107.4"/>
+      <polyline points="740,112.6 750,112.6"/>
+      <polyline points="750,107.4 760,107.4"/>
+      <polyline points="750,112.6 760,112.6"/>
+      <polyline points="760,107.4 770,107.4"/>
+      <polyline points="760,112.6 770,112.6"/>
+      <polyline points="770,107.4 780,107.4"/>
+      <polyline points="770,112.6 780,112.6"/>
+      <polyline points="780,107.4 790,107.4"/>
+      <polyline points="780,112.6 790,112.6"/>
+      <polyline points="790,107.4 800,107.4"/>
+      <polyline points="790,112.6 800,112.6"/>
+      <polyline points="800,112.6 807.6,112.6 807.6,100"/>
+      <polyline points="800,107.4 802.4,107.4 802.4,100"/>
+      <polyline points="820,112.6 812.4,112.6 812.4,100"/>
+      <polyline points="820,107.4 817.6,107.4 817.6,100"/>
+      <polyline points="820,107.4 830,107.4"/>
+      <polyline points="820,112.6 830,112.6"/>
+      <polyline points="830,107.4 840,107.4"/>
+      <polyline points="830,112.6 840,112.6"/>
+      <polyline points="840,107.4 850,107.4"/>
+      <polyline points="840,112.6 850,112.6"/>
+      <polyline points="850,107.4 860,107.4"/>
+      <polyline points="850,112.6 860,112.6"/>
+      <polyline points="860,107.4 870,107.4"/>
+      <polyline points="860,112.6 870,112.6"/>
+      <polyline points="870,107.4 880,107.4"/>
+      <polyline points="870,112.6 880,112.6"/>
+      <polyline points="880,112.6 887.6,112.6 887.6,100"/>
+      <polyline points="880,107.4 882.4,107.4 882.4,100"/>
+    </g>
+    <g fill="url(#ink)" filter="url(#glow)">
+      <rect x="10" y="0" width="50" height="20"/>
+      <rect x="80" y="0" width="20" height="20"/>
+      <rect x="160" y="0" width="20" height="20"/>
+      <rect x="210" y="0" width="80" height="20"/>
+      <rect x="300" y="0" width="20" height="20"/>
+      <rect x="350" y="0" width="20" height="20"/>
+      <rect x="380" y="0" width="70" height="20"/>
+      <rect x="460" y="0" width="80" height="20"/>
+      <rect x="560" y="0" width="60" height="20"/>
+      <rect x="650" y="0" width="60" height="20"/>
+      <rect x="730" y="0" width="20" height="20"/>
+      <rect x="810" y="0" width="70" height="20"/>
+      <rect x="0" y="20" width="20" height="20"/>
+      <rect x="50" y="20" width="20" height="20"/>
+      <rect x="80" y="20" width="20" height="20"/>
+      <rect x="160" y="20" width="20" height="20"/>
+      <rect x="240" y="20" width="20" height="20"/>
+      <rect x="300" y="20" width="20" height="20"/>
+      <rect x="350" y="20" width="20" height="20"/>
+      <rect x="380" y="20" width="20" height="20"/>
+      <rect x="490" y="20" width="20" height="20"/>
+      <rect x="550" y="20" width="20" height="20"/>
+      <rect x="610" y="20" width="20" height="20"/>
+      <rect x="640" y="20" width="20" height="20"/>
+      <rect x="700" y="20" width="20" height="20"/>
+      <rect x="730" y="20" width="20" height="20"/>
+      <rect x="810" y="20" width="20" height="20"/>
+      <rect x="0" y="40" width="70" height="20"/>
+      <rect x="80" y="40" width="20" height="20"/>
+      <rect x="160" y="40" width="20" height="20"/>
+      <rect x="240" y="40" width="20" height="20"/>
+      <rect x="300" y="40" width="70" height="20"/>
+      <rect x="380" y="40" width="50" height="20"/>
+      <rect x="490" y="40" width="20" height="20"/>
+      <rect x="550" y="40" width="20" height="20"/>
+      <rect x="610" y="40" width="20" height="20"/>
+      <rect x="640" y="40" width="20" height="20"/>
+      <rect x="700" y="40" width="20" height="20"/>
+      <rect x="730" y="40" width="20" height="20"/>
+      <rect x="810" y="40" width="70" height="20"/>
+      <rect x="0" y="60" width="20" height="20"/>
+      <rect x="50" y="60" width="20" height="20"/>
+      <rect x="80" y="60" width="20" height="20"/>
+      <rect x="160" y="60" width="20" height="20"/>
+      <rect x="240" y="60" width="20" height="20"/>
+      <rect x="300" y="60" width="20" height="20"/>
+      <rect x="350" y="60" width="20" height="20"/>
+      <rect x="380" y="60" width="20" height="20"/>
+      <rect x="490" y="60" width="20" height="20"/>
+      <rect x="550" y="60" width="20" height="20"/>
+      <rect x="610" y="60" width="20" height="20"/>
+      <rect x="640" y="60" width="20" height="20"/>
+      <rect x="700" y="60" width="20" height="20"/>
+      <rect x="730" y="60" width="20" height="20"/>
+      <rect x="860" y="60" width="20" height="20"/>
+      <rect x="0" y="80" width="20" height="20"/>
+      <rect x="50" y="80" width="20" height="20"/>
+      <rect x="80" y="80" width="70" height="20"/>
+      <rect x="160" y="80" width="70" height="20"/>
+      <rect x="240" y="80" width="20" height="20"/>
+      <rect x="300" y="80" width="20" height="20"/>
+      <rect x="350" y="80" width="20" height="20"/>
+      <rect x="380" y="80" width="70" height="20"/>
+      <rect x="490" y="80" width="20" height="20"/>
+      <rect x="560" y="80" width="60" height="20"/>
+      <rect x="650" y="80" width="60" height="20"/>
+      <rect x="730" y="80" width="70" height="20"/>
+      <rect x="810" y="80" width="70" height="20"/>
+    </g>
+  </g>
+</svg>
