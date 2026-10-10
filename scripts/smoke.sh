@@ -230,8 +230,12 @@ case "$(uname -s)" in
         ;;
     *)
         vhd="$(cygpath -w "$image_dir/smoke.vhd")"
-        printf 'create vdisk file="%s" maximum=16 type=fixed\nselect vdisk file="%s"\nattach vdisk\ncreate partition primary\nformat fs=fat32 quick label=ATTVHD\ndetach vdisk\n' "$vhd" "$vhd" > "$image_dir/make.txt"
-        diskpart /s "$(cygpath -w "$image_dir/make.txt")" > /dev/null
+        # FAT32 needs a volume of more than 32 MB.
+        printf 'create vdisk file="%s" maximum=64 type=fixed\nselect vdisk file="%s"\nattach vdisk\ncreate partition primary\nformat fs=fat32 quick label=ATTVHD\ndetach vdisk\n' "$vhd" "$vhd" > "$image_dir/make.txt"
+        if ! diskpart /s "$(cygpath -w "$image_dir/make.txt")" > "$image_dir/diskpart.log"; then
+            cat "$image_dir/diskpart.log"
+            exit 1
+        fi
         step mount "$image_dir/smoke.vhd"
         step mount --detach "$image_dir/smoke.vhd"
         ;;
