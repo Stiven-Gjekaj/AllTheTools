@@ -97,7 +97,8 @@ scoop bucket add stiven-gjekaj https://github.com/Stiven-Gjekaj/scoop-bucket
 scoop install stiven-gjekaj/allthetools
 ```
 
-On Windows, with winget, when Microsoft accepts the manifest:
+On Windows, with winget, when Microsoft accepts the manifest in
+[winget-pkgs](https://github.com/microsoft/winget-pkgs/pull/450254):
 
 ```powershell
 winget install Stiven-Gjekaj.AllTheTools
