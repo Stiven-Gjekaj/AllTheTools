@@ -129,6 +129,19 @@ jobs:
           cat SHA256SUMS
           echo "${version}" > ../VERSION
 
+      # A package that its own tool refuses is no package. dpkg installs the
+      # Debian package on this runner, and rpm reads the RPM package.
+      - name: install the packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo dpkg -i dist/allthetools_*_amd64.deb
+          att --version
+          sudo dpkg -r allthetools
+          sudo apt-get install -y rpm > /dev/null
+          rpm -qip dist/allthetools-*.x86_64.rpm
+          rpm -qlp dist/allthetools-*.x86_64.rpm | grep -qx /usr/bin/att
+
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dist
