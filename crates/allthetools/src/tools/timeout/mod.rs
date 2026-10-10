@@ -95,11 +95,11 @@ pub fn run(args: Args) -> Result<i32> {
 }
 
 fn make_plan(args: &Args) -> Result<Plan> {
-    let limit = parse::duration(&args.duration)?;
+    let limit = crate::time::duration(&args.duration)?;
     let kill_after = args
         .kill_after
         .as_deref()
-        .map(parse::duration)
+        .map(crate::time::duration)
         .transpose()?;
     Ok(Plan {
         limit: (!limit.is_zero()).then_some(limit),
