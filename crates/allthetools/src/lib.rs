@@ -8,6 +8,7 @@ use clap::Parser;
 pub mod cli;
 pub mod disks;
 pub mod host;
+pub mod progress;
 pub mod rawdev;
 pub mod size;
 pub mod table;
