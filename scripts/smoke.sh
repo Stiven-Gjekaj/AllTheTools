@@ -43,3 +43,18 @@ fi
 # ldd reads the binary of att itself, which the loader of the host found.
 step ldd "$BIN"
 step ldd --tree --json "$BIN"
+
+# unquarantine removes a mark that this script puts on a file with the tool of
+# the host. It changes only that file, in a directory of its own.
+mark_dir="$(mktemp -d)"
+echo sample > "$mark_dir/download"
+case "$(uname -s)" in
+    Darwin) xattr -w com.apple.quarantine "0083;66f1c2a0;Safari;" "$mark_dir/download" ;;
+    Linux) python3 -c 'import os, sys; os.setxattr(sys.argv[1], "user.xdg.origin.url", b"https://example.com/")' "$mark_dir/download" ;;
+    *) printf '[ZoneTransfer]\r\nZoneId=3\r\n' > "$mark_dir/download:Zone.Identifier" ;;
+esac
+step unquarantine --check "$mark_dir/download"
+"$ATT" unquarantine --check "$mark_dir/download" | grep -q "1 of 1"
+step unquarantine "$mark_dir/download"
+"$ATT" unquarantine --check "$mark_dir/download" | grep -q "0 of 1"
+rm -rf "$mark_dir"
