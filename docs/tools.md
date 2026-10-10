@@ -79,9 +79,10 @@ ejects a disk image on macOS. Hardware: macOS with a disk image.
 A host refuses the kinds that it cannot attach, and the error says which kinds
 it takes.
 
-Tested: CI attaches an ISO on macOS, an ext4 image as root on Linux, and a
-VHD on Windows, and detaches each one. Hardware: macOS with a DMG, an ISO and
-a raw image.
+Tested: CI attaches an ISO on macOS, an ext4 image on Linux through udisks
+as root, and a VHD on Windows, and detaches each one. Hardware: macOS with a
+DMG, an ISO and a raw image. **The path of Linux with no udisks, through
+`losetup`, is not yet tested.**
 
 ### `att whoholds`
 
