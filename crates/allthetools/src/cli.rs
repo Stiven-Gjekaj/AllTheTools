@@ -37,6 +37,8 @@ pub enum Command {
     /// Measure the download, the upload and the responsiveness of the
     /// network.
     Netquality(tools::netquality::Args),
+    /// Find the real size of a flash drive, as f3probe does.
+    Probe(tools::probe::Args),
     /// Show the temperatures, the fans and the voltages that the host
     /// reports.
     Sensors(tools::sensors::Args),

@@ -33,6 +33,7 @@ pub fn run() -> i32 {
         Command::Lsusb(args) => tools::lsusb::run(args),
         Command::Mount(args) => tools::mount::run(args),
         Command::Netquality(args) => tools::netquality::run(args),
+        Command::Probe(args) => tools::probe::run(args),
         Command::Sensors(args) => tools::sensors::run(args),
         Command::Surface(args) => tools::surface::run(args),
         Command::Timeout(args) => tools::timeout::run(args),
