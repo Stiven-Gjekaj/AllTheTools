@@ -6,6 +6,7 @@
 use clap::Parser;
 
 pub mod cli;
+pub mod disks;
 pub mod host;
 pub mod size;
 pub mod table;
