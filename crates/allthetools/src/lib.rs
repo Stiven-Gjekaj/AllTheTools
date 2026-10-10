@@ -25,6 +25,7 @@ pub fn run() -> i32 {
         Command::Battery(args) => tools::battery::run(args),
         Command::Clip(args) => tools::clip::run(args),
         Command::Ldd(args) => tools::ldd::run(args),
+        Command::Lsblk(args) => tools::lsblk::run(args),
         Command::Lspci(args) => tools::lspci::run(args),
         Command::Lsusb(args) => tools::lsusb::run(args),
         Command::Netquality(args) => tools::netquality::run(args),

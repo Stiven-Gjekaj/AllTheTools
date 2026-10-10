@@ -5,6 +5,7 @@ pub mod awake;
 pub mod battery;
 pub mod clip;
 pub mod ldd;
+pub mod lsblk;
 pub mod lspci;
 pub mod lsusb;
 pub mod netquality;

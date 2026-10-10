@@ -24,6 +24,8 @@ pub enum Command {
     Clip(tools::clip::Args),
     /// List the libraries that a binary needs, and where each one is.
     Ldd(tools::ldd::Args),
+    /// List the drives and their partitions as a tree.
+    Lsblk(tools::lsblk::Args),
     /// List the PCI devices.
     Lspci(tools::lspci::Args),
     /// List the USB devices.
