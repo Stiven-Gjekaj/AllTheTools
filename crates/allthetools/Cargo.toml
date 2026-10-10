@@ -19,6 +19,8 @@ path = "src/main.rs"
 anyhow.workspace = true
 clap.workspace = true
 goblin.workspace = true
+serde.workspace = true
+serde_json.workspace = true
 
 # The bindings of one host never reach the other two. Each tool keeps its
 # decisions in a pure module that every host compiles.

@@ -96,11 +96,12 @@ pub fn read(bytes: &[u8], prefer: Option<u32>) -> Result<Binary> {
 }
 
 fn mach(macho: &goblin::mach::MachO<'_>) -> Binary {
-    // goblin puts the name "self" first in the list, for the binary itself.
+    // goblin puts the binary itself first in the list: the word "self" for a
+    // program, and the install name for a library.
     let needed = macho
         .libs
         .iter()
-        .filter(|name| **name != "self")
+        .skip(1)
         .map(|name| (*name).to_owned())
         .collect();
     Binary {

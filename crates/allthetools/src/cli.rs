@@ -15,6 +15,8 @@ pub struct Cli {
 /// One tool of AllTheTools.
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// List the libraries that a binary needs, and where each one is.
+    Ldd(tools::ldd::Args),
     /// Run a command, and stop it when its time runs out.
     Timeout(tools::timeout::Args),
     /// Wake a computer on the local network with a magic packet.
