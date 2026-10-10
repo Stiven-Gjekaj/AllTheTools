@@ -60,6 +60,10 @@ pub struct Battery {
     pub temperature_c: Option<f64>,
     /// The time to empty, or to full, as the host gives it.
     pub minutes_left: Option<u32>,
+    /// The health that the settings of the host show, when the host rates
+    /// the battery itself. macOS shows a smoothed figure that can be higher
+    /// than the ratio of the two capacities.
+    pub host_health: Option<f64>,
 }
 
 impl Battery {
@@ -97,7 +101,8 @@ impl Battery {
         if let Some(percent) = self.percent {
             out.push(("Charge".to_owned(), format!("{percent:.0}%")));
         }
-        if let Some(minutes) = self.minutes_left {
+        let moving = matches!(self.state, State::Charging | State::Discharging);
+        if let Some(minutes) = self.minutes_left.filter(|_| moving) {
             let what = if self.state == State::Charging {
                 "to full"
             } else {
@@ -109,10 +114,14 @@ impl Battery {
             ));
         }
         let unit = self.unit.label();
+        let host = self
+            .host_health
+            .map(|h| format!("; the system shows {h:.0}%"))
+            .unwrap_or_default();
         match (self.health(), self.full_capacity, self.design_capacity) {
             (Some(health), Some(full), Some(design)) => out.push((
                 "Health".to_owned(),
-                format!("{health:.1}% ({full} of {design} {unit} when new)"),
+                format!("{health:.1}% ({full} of {design} {unit} when new{host})"),
             )),
             (None, Some(full), _) => out.push(("Full charge".to_owned(), format!("{full} {unit}"))),
             _ => {}
@@ -191,6 +200,7 @@ pub fn linux(supplies: &[SysfsSupply]) -> Vec<Battery> {
                     .and_then(|t| t.parse::<f64>().ok())
                     .map(|t| t / 10.0),
                 minutes_left: None,
+                host_health: None,
             }
         })
         .collect()
@@ -242,6 +252,15 @@ pub fn macos(plist: &[u8]) -> Result<Vec<Battery>> {
             (Some(now), Some(max)) if max > 0 => Some(now as f64 * 100.0 / max as f64),
             _ => None,
         };
+        // The figure of System Settings, "Maximum Capacity", is MaxCapacity
+        // inside BatteryData on Apple silicon.
+        let host_health = dict
+            .get("BatteryData")
+            .and_then(plist::Value::as_dictionary)
+            .and_then(|d| d.get("MaxCapacity"))
+            .and_then(plist::Value::as_unsigned_integer)
+            .filter(|p| *p <= 100)
+            .map(|p| p as f64);
         // 65535 means that macOS does not know the time yet.
         let minutes_left = int("TimeRemaining")
             .filter(|m| *m < 65535 && *m > 0)
@@ -260,6 +279,7 @@ pub fn macos(plist: &[u8]) -> Result<Vec<Battery>> {
             voltage: int("Voltage").map(|v| v as f64 / 1000.0),
             temperature_c: int("Temperature").map(|t| t as f64 / 100.0),
             minutes_left,
+            host_health,
         });
     }
     Ok(out)
@@ -382,6 +402,7 @@ pub fn windows(json: &str) -> Result<Vec<Battery>> {
                 .filter(|v| *v > 0.0),
             temperature_c: None,
             minutes_left,
+            host_health: None,
         });
     }
     Ok(out)
@@ -469,6 +490,10 @@ mod tests {
     <key>Temperature</key><integer>3054</integer>
     <key>TimeRemaining</key><integer>65535</integer>
     <key>Voltage</key><integer>12482</integer>
+    <key>BatteryData</key>
+    <dict>
+      <key>MaxCapacity</key><integer>100</integer>
+    </dict>
   </dict>
 </array>
 </plist>"#;
@@ -487,9 +512,21 @@ mod tests {
         let lines = b.lines();
         assert!(lines.contains(&(
             "Health".to_owned(),
-            "96.0% (4443 of 4629 mAh when new)".to_owned()
+            "96.0% (4443 of 4629 mAh when new; the system shows 100%)".to_owned()
         )));
         assert!(lines.contains(&("Cycles".to_owned(), "29 of 1000".to_owned())));
+    }
+
+    #[test]
+    fn the_time_shows_only_when_the_charge_moves() {
+        let mut b = macos(IOREG.as_bytes()).unwrap().remove(0);
+        b.minutes_left = Some(90);
+        assert!(!b.lines().iter().any(|(k, _)| k == "Time"));
+        b.state = State::Discharging;
+        assert!(
+            b.lines()
+                .contains(&("Time".to_owned(), "1:30 left".to_owned()))
+        );
     }
 
     #[test]
