@@ -4,6 +4,7 @@
 pub mod awake;
 pub mod battery;
 pub mod clip;
+pub mod ddc;
 pub mod eject;
 pub mod ldd;
 pub mod lsblk;
