@@ -347,3 +347,7 @@ case "$(uname -s)" in
         ;;
 esac
 rm -rf "$probe_dir"
+
+# ddc lists the monitors that answer. A runner has none, and the tool says
+# so.
+step ddc list
