@@ -237,3 +237,27 @@ case "$(uname -s)" in
         ;;
 esac
 rm -rf "$image_dir"
+
+# whoholds finds a process that this script starts to hold a file open.
+hold_dir="$(mktemp -d)"
+echo data > "$hold_dir/held.txt"
+"$PY" -c '
+import sys, time
+f = open(sys.argv[1])
+open(sys.argv[2], "w").write("open")
+time.sleep(60)
+' "$hold_dir/held.txt" "$hold_dir/ready" &
+holder=$!
+for _ in $(seq 1 50); do
+    [ -s "$hold_dir/ready" ] && break
+    sleep 0.2
+done
+step whoholds "$hold_dir/held.txt"
+"$ATT" whoholds --json "$hold_dir/held.txt" | grep -qi "python" || {
+    echo "att whoholds did not find the process that holds the file" >&2
+    kill "$holder" 2>/dev/null || true
+    exit 1
+}
+kill "$holder" 2>/dev/null || true
+wait "$holder" 2>/dev/null || true
+rm -rf "$hold_dir"
