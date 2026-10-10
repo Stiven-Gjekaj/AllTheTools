@@ -15,6 +15,7 @@ authors = ["Stiven Gjekaj <stivenagostingjekaj@gmail.com>"]
 [workspace.dependencies]
 anyhow = "=1.0.104"
 clap = { version = "=4.6.6", features = ["derive"] }
+goblin = "=0.10.7"
 libc = "=0.2.190"
 windows-sys = "=0.61.2"
 

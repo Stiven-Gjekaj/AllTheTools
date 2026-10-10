@@ -18,6 +18,7 @@ path = "src/main.rs"
 [dependencies]
 anyhow.workspace = true
 clap.workspace = true
+goblin.workspace = true
 
 # The bindings of one host never reach the other two. Each tool keeps its
 # decisions in a pure module that every host compiles.
