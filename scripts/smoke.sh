@@ -114,20 +114,34 @@ step battery --json
 step sensors
 step sensors --json
 
-# whoport finds a server that this script starts on a free port, and stops
-# it. Nothing else is stopped.
+# whoport finds a server that this script starts, and stops it. Nothing
+# else is stopped. The server takes a free port itself and writes its number
+# to a file, so no other program can take the port between the two.
 step whoport
-port=$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])' 2>/dev/null \
-    || python -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')
 PY=python3
 command -v python3 >/dev/null 2>&1 || PY=python
-"$PY" -m http.server "$port" --bind 127.0.0.1 >/dev/null 2>&1 &
+port_file="$(mktemp)"
+rm -f "$port_file"
+"$PY" -c '
+import socket, sys, time
+s = socket.socket()
+s.bind(("127.0.0.1", 0))
+s.listen(1)
+open(sys.argv[1], "w").write(str(s.getsockname()[1]))
+time.sleep(120)
+' "$port_file" &
 server=$!
-for _ in 1 2 3 4 5 6 7 8 9 10; do
-    "$ATT" whoport "$port" >/dev/null 2>&1 && break
-    sleep 1
+for _ in $(seq 1 50); do
+    [ -s "$port_file" ] && break
+    sleep 0.2
 done
-step whoport "$port"
+port="$(cat "$port_file")"
+if ! "$ATT" whoport "$port"; then
+    echo "att whoport did not find the server on port $port" >&2
+    lsof -nP -iTCP:"$port" 2>/dev/null || true
+    kill "$server" 2>/dev/null || true
+    exit 1
+fi
 step whoport "$port" --kill --yes
 sleep 1
 if "$ATT" whoport "$port" >/dev/null 2>&1; then
