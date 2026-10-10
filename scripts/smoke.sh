@@ -26,6 +26,12 @@ step() {
     echo "::endgroup::"
 }
 
+# Run a diskpart script on Windows. The shell of Git for Windows turns an
+# argument that starts with a slash into a path, and /s is no path.
+diskpart_script() {
+    MSYS_NO_PATHCONV=1 diskpart /s "$(cygpath -w "$1")"
+}
+
 step --version
 
 # timeout gives the exit code of GNU timeout. It stops nothing outside the
@@ -232,7 +238,7 @@ case "$(uname -s)" in
         vhd="$(cygpath -w "$image_dir/smoke.vhd")"
         # FAT32 needs a volume of more than 32 MB.
         printf 'create vdisk file="%s" maximum=64 type=fixed\nselect vdisk file="%s"\nattach vdisk\ncreate partition primary\nformat fs=fat32 quick label=ATTVHD\ndetach vdisk\n' "$vhd" "$vhd" > "$image_dir/make.txt"
-        if ! diskpart /s "$(cygpath -w "$image_dir/make.txt")" > "$image_dir/diskpart.log"; then
+        if ! diskpart_script "$image_dir/make.txt" > "$image_dir/diskpart.log"; then
             cat "$image_dir/diskpart.log"
             exit 1
         fi
@@ -286,12 +292,12 @@ case "$(uname -s)" in
     *)
         vhd="$(cygpath -w "$scan_dir/scan.vhd")"
         printf 'create vdisk file="%s" maximum=64 type=fixed\nselect vdisk file="%s"\nattach vdisk\n' "$vhd" "$vhd" > "$scan_dir/attach.txt"
-        diskpart /s "$(cygpath -w "$scan_dir/attach.txt")" > "$scan_dir/diskpart.log" || { cat "$scan_dir/diskpart.log"; exit 1; }
+        diskpart_script "$scan_dir/attach.txt" > "$scan_dir/diskpart.log" || { cat "$scan_dir/diskpart.log"; exit 1; }
         number="$("$ATT" lsblk --json | "$PY" -c 'import json, sys; print([d["id"] for d in json.load(sys.stdin) if d["virtual_disk"]][-1])')"
         step surface "$number"
         printf '%s\n' "$number" | "$ATT" surface --write --force "$number"
         printf 'select vdisk file="%s"\ndetach vdisk\n' "$vhd" > "$scan_dir/detach.txt"
-        diskpart /s "$(cygpath -w "$scan_dir/detach.txt")" > /dev/null
+        diskpart_script "$scan_dir/detach.txt" > /dev/null
         ;;
 esac
 rm -rf "$scan_dir"
@@ -331,13 +337,13 @@ case "$(uname -s)" in
     *)
         vhd="$(cygpath -w "$probe_dir/probe.vhd")"
         printf 'create vdisk file="%s" maximum=64 type=fixed\nselect vdisk file="%s"\nattach vdisk\n' "$vhd" "$vhd" > "$probe_dir/attach.txt"
-        diskpart /s "$(cygpath -w "$probe_dir/attach.txt")" > "$probe_dir/diskpart.log" || { cat "$probe_dir/diskpart.log"; exit 1; }
+        diskpart_script "$probe_dir/attach.txt" > "$probe_dir/diskpart.log" || { cat "$probe_dir/diskpart.log"; exit 1; }
         number="$("$ATT" lsblk --json | "$PY" -c 'import json, sys; print([d["id"] for d in json.load(sys.stdin) if d["virtual_disk"]][-1])')"
         echo "::group::att probe $number"
         printf '%s\n' "$number" | "$ATT" probe --force "$number"
         echo "::endgroup::"
         printf 'select vdisk file="%s"\ndetach vdisk\n' "$vhd" > "$probe_dir/detach.txt"
-        diskpart /s "$(cygpath -w "$probe_dir/detach.txt")" > /dev/null
+        diskpart_script "$probe_dir/detach.txt" > /dev/null
         ;;
 esac
 rm -rf "$probe_dir"
