@@ -2,3 +2,4 @@
 //! into another one.
 
 pub mod timeout;
+pub mod wol;
