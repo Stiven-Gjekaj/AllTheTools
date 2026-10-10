@@ -51,6 +51,45 @@ fn text(value: Option<&str>) -> Option<String> {
     (!value.is_empty()).then(|| value.to_owned())
 }
 
+/// Find the drive that a person names. Each form that a tool of the host
+/// shows is accepted: `sdb` and `/dev/sdb`, `disk4`, `/dev/disk4` and
+/// `/dev/rdisk4`, `2`, `PhysicalDrive2` and `\\.\PhysicalDrive2`. A name of a
+/// partition gives the drive that holds it.
+pub fn select<'a>(disks: &'a [Disk], name: &str) -> Result<&'a Disk> {
+    let name = name.trim();
+    let bare = name
+        .trim_start_matches("\\\\.\\")
+        .trim_start_matches("/dev/r")
+        .trim_start_matches("/dev/");
+    let lower = bare.to_ascii_lowercase();
+    let bare = lower.strip_prefix("physicaldrive").unwrap_or(&lower);
+    let matches = |disk: &Disk| {
+        disk.id.eq_ignore_ascii_case(bare)
+            || disk.path.eq_ignore_ascii_case(name)
+            || disk.raw_path.eq_ignore_ascii_case(name)
+            || disk
+                .partitions
+                .iter()
+                .any(|p| p.id.eq_ignore_ascii_case(bare) || p.path.eq_ignore_ascii_case(name))
+                && !disk.partitions.iter().any(|p| p.id.parse::<u32>().is_ok())
+    };
+    match disks.iter().find(|d| matches(d)) {
+        Some(disk) => Ok(disk),
+        None => anyhow::bail!("no drive has the name `{name}`. `att lsblk` lists the drives"),
+    }
+}
+
+/// Compare two names so that a number in them counts as a number: sda2
+/// comes before sda10.
+pub fn natural_cmp(a: &str, b: &str) -> std::cmp::Ordering {
+    let split = |s: &str| {
+        let digits = s.len() - s.trim_end_matches(|c: char| c.is_ascii_digit()).len();
+        let (head, tail) = s.split_at(s.len() - digits);
+        (head.to_owned(), tail.parse::<u64>().unwrap_or(0))
+    };
+    split(a).cmp(&split(b))
+}
+
 // ---------------------------------------------------------------- Linux --
 
 /// What the Linux host file reads for one block device in /sys/block.
@@ -225,7 +264,7 @@ pub fn linux(
             partitions,
         });
     }
-    out.sort_by(|a, b| a.id.cmp(&b.id));
+    out.sort_by(|a, b| natural_cmp(&a.id, &b.id));
     out
 }
 
@@ -830,6 +869,58 @@ mod tests {
         assert_eq!(root.model, None, "an empty name is no name");
         assert!(root.internal && !root.removable && !root.writable);
         assert_eq!(root.filesystem.as_deref(), Some("apfs"));
+    }
+
+    #[test]
+    fn select_takes_each_form_of_a_name() {
+        let disk = |id: &str, path: &str, raw: &str, part: &str| Disk {
+            id: id.to_owned(),
+            path: path.to_owned(),
+            raw_path: raw.to_owned(),
+            partitions: vec![Partition {
+                id: part.to_owned(),
+                path: format!("/dev/{part}"),
+                ..Partition::default()
+            }],
+            ..Disk::default()
+        };
+        let disks = [
+            disk("disk4", "/dev/disk4", "/dev/rdisk4", "disk4s1"),
+            disk("sdb", "/dev/sdb", "/dev/sdb", "sdb1"),
+            disk("2", "\\\\.\\PhysicalDrive2", "\\\\.\\PhysicalDrive2", "1"),
+        ];
+        for name in [
+            "disk4",
+            "/dev/disk4",
+            "/dev/rdisk4",
+            "disk4s1",
+            "/dev/disk4s1",
+        ] {
+            assert_eq!(select(&disks, name).unwrap().id, "disk4", "{name}");
+        }
+        for name in ["sdb", "/dev/sdb", "sdb1"] {
+            assert_eq!(select(&disks, name).unwrap().id, "sdb", "{name}");
+        }
+        for name in [
+            "2",
+            "PhysicalDrive2",
+            "\\\\.\\PhysicalDrive2",
+            "physicaldrive2",
+        ] {
+            assert_eq!(select(&disks, name).unwrap().id, "2", "{name}");
+        }
+        assert!(
+            select(&disks, "1").is_err(),
+            "a partition number of Windows is no drive"
+        );
+        assert!(select(&disks, "sdc").is_err());
+    }
+
+    #[test]
+    fn natural_cmp_counts_the_number_at_the_end() {
+        let mut names = vec!["sda10", "sda2", "sda1", "nvme0n1"];
+        names.sort_by(|a, b| natural_cmp(a, b));
+        assert_eq!(names, ["nvme0n1", "sda1", "sda2", "sda10"]);
     }
 
     #[test]
