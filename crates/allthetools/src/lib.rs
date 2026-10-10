@@ -9,6 +9,7 @@ pub mod cli;
 pub mod host;
 pub mod size;
 pub mod table;
+pub mod tools;
 
 use cli::{Cli, Command};
 
