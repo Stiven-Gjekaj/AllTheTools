@@ -1,6 +1,6 @@
 <div align="center">
 
-![AllTheTools](assets/wordmark.svg)
+![AllTheTools](assets/banner.svg)
 
 ### The tools that one system has and the other two do not
 
