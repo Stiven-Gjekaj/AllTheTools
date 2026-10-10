@@ -19,5 +19,18 @@ path = "src/main.rs"
 anyhow.workspace = true
 clap.workspace = true
 
+# The bindings of one host never reach the other two. Each tool keeps its
+# decisions in a pure module that every host compiles.
+[target.'cfg(unix)'.dependencies]
+libc.workspace = true
+
+[target.'cfg(windows)'.dependencies.windows-sys]
+workspace = true
+features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_JobObjects",
+]
+
 [lints]
 workspace = true

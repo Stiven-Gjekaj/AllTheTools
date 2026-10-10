@@ -15,6 +15,8 @@ authors = ["Stiven Gjekaj <stivenagostingjekaj@gmail.com>"]
 [workspace.dependencies]
 anyhow = "=1.0.104"
 clap = { version = "=4.6.6", features = ["derive"] }
+libc = "=0.2.190"
+windows-sys = "=0.61.2"
 
 [workspace.lints.rust]
 rust_2018_idioms = { level = "warn", priority = -1 }

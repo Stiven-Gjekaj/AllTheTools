@@ -19,10 +19,7 @@ use cli::{Cli, Command};
 pub fn run() -> i32 {
     let cli = Cli::parse();
     let result: anyhow::Result<i32> = match cli.command {
-        Command::Version => {
-            println!("att {}", env!("CARGO_PKG_VERSION"));
-            Ok(0)
-        }
+        Command::Timeout(args) => tools::timeout::run(args),
     };
     match result {
         Ok(code) => code,
