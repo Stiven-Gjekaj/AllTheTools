@@ -55,10 +55,11 @@ impl Reading {
 }
 
 /// A temperature that no sensor of a working computer reports. A sensor that
-/// is not connected gives such a value.
+/// is not connected gives such a value: 0, -273, or a fixed value below
+/// -20 degrees, as one channel of the PMU of Apple silicon does.
 fn plausible(kind: Kind, value: f64) -> bool {
     match kind {
-        Kind::Temperature => value.is_finite() && value > -40.0 && value < 150.0 && value != 0.0,
+        Kind::Temperature => value.is_finite() && value > -20.0 && value < 150.0 && value != 0.0,
         Kind::Fan => value.is_finite() && (0.0..30000.0).contains(&value),
         Kind::Voltage => value.is_finite() && value > 0.0 && value < 100.0,
     }
@@ -188,8 +189,45 @@ pub fn hid_temperatures(values: &[(String, f64)]) -> Vec<Reading> {
             critical: None,
         })
         .collect();
-    out.sort_by(|a, b| a.label.cmp(&b.label));
+    out.sort_by(|a, b| natural(&a.label, &b.label));
     out
+}
+
+/// Compare two names so that a number in them counts as a number: "tdie2"
+/// comes before "tdie10".
+pub fn natural(a: &str, b: &str) -> std::cmp::Ordering {
+    use std::cmp::Ordering;
+    let (a, b) = (a.as_bytes(), b.as_bytes());
+    let (mut i, mut j) = (0, 0);
+    while i < a.len() && j < b.len() {
+        if a[i].is_ascii_digit() && b[j].is_ascii_digit() {
+            let start = (i, j);
+            while i < a.len() && a[i].is_ascii_digit() {
+                i += 1;
+            }
+            while j < b.len() && b[j].is_ascii_digit() {
+                j += 1;
+            }
+            let number = |s: &[u8]| {
+                std::str::from_utf8(s)
+                    .ok()
+                    .and_then(|s| s.parse::<u64>().ok())
+                    .unwrap_or(u64::MAX)
+            };
+            match number(&a[start.0..i]).cmp(&number(&b[start.1..j])) {
+                Ordering::Equal => continue,
+                other => return other,
+            }
+        }
+        match a[i].cmp(&b[j]) {
+            Ordering::Equal => {
+                i += 1;
+                j += 1;
+            }
+            other => return other,
+        }
+    }
+    (a.len() - i).cmp(&(b.len() - j))
 }
 
 /// One thermal zone of Windows, from the performance counters, as PowerShell
@@ -311,6 +349,22 @@ mod tests {
         let labels: Vec<&str> = readings.iter().map(|r| r.label.as_str()).collect();
         assert_eq!(labels, ["NAND CH0 temp", "PMU tdie1"]);
         assert_eq!(readings[1].value, 41.2);
+    }
+
+    #[test]
+    fn natural_order_counts_numbers() {
+        let mut names = vec!["PMU tdie10", "PMU tdie2", "PMU tdie1", "PMU2 tdie1", "NAND"];
+        names.sort_by(|a, b| natural(a, b));
+        assert_eq!(
+            names,
+            ["NAND", "PMU tdie1", "PMU tdie2", "PMU tdie10", "PMU2 tdie1"]
+        );
+    }
+
+    #[test]
+    fn a_fixed_value_far_below_zero_is_no_reading() {
+        let readings = hid_temperatures(&[("PMU tdev1".to_owned(), -22.2)]);
+        assert!(readings.is_empty());
     }
 
     #[test]
