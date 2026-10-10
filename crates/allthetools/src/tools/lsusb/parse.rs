@@ -120,8 +120,11 @@ pub fn linux(dirs: &[SysfsDevice]) -> Vec<Device> {
 
 /// Read the devices from `ioreg -p IOUSB -l -r -c IOUSBHostDevice -a` on
 /// macOS. Each device holds the devices behind it, so the walk goes into
-/// each one.
+/// each one. ioreg prints nothing at all when no device matches.
 pub fn macos(plist: &[u8]) -> Result<Vec<Device>> {
+    if plist.iter().all(u8::is_ascii_whitespace) {
+        return Ok(Vec::new());
+    }
     let value = plist::Value::from_reader_xml(plist)
         .context("ioreg gave a property list that is not valid")?;
     let mut devices = Vec::new();
@@ -332,6 +335,12 @@ mod tests {
         );
         assert_eq!(devices[2].serial.as_deref(), Some("7505029105146747"));
         assert_eq!(devices[1].speed_mbps, Some(5000.0));
+    }
+
+    #[test]
+    fn macos_with_no_device_gives_an_empty_list() {
+        assert!(macos(b"").unwrap().is_empty());
+        assert!(macos(b"\n").unwrap().is_empty());
     }
 
     #[test]
