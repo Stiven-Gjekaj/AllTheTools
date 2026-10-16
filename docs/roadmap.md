@@ -16,7 +16,7 @@ card. These tests wait for a person with the hardware, and
 | Test | Hosts | What passes |
 | --- | --- | --- |
 | `att probe` on a real fake USB stick | each | the usable size agrees with `f3probe` on Linux, or with H2testw on Windows |
-| `att probe` on a real honest USB stick | each | it passes, and the files on the stick are the same after |
+| `att probe` on a real honest USB stick | Linux, Windows | it passes, and the files on the stick are the same after |
 | `att surface` on a real USB drive | each | it reads each sector, and `--write` erases and checks it |
 | `att eject` on a real USB drive | Linux, Windows | the drive is safe to remove, and the host says so |
 | `att ddc` with a real monitor | each | `get brightness` agrees with the menu of the monitor, and `set` changes it |
@@ -27,12 +27,7 @@ card. These tests wait for a person with the hardware, and
 | `att clip` on a Linux desktop | Linux | a line copies and pastes on Wayland and on X11 |
 | `att awake` on a Linux desktop | Linux | logind shows the lock in `systemd-inhibit --list` |
 
-## 2. The first release
-
-Version 0.1.0 goes to each channel that [docs/releasing.md](releasing.md)
-names: Homebrew, Scoop, winget, and the `.deb` and `.rpm` assets.
-
-## 3. Closer to the API of the host
+## 2. Closer to the API of the host
 
 Some tools run a command of the host where an API exists, because the API is
 very large for the job. Each one can move to the API, one tool at a time, with
@@ -46,7 +41,7 @@ no change to its output:
 - `att whoport` and `att whoholds` on macOS run `lsof`. `libproc` is the API
   under it.
 
-## 4. More tools
+## 3. More tools
 
 A new tool needs a gap: one host has the tool, and the others do not.
 [CONTRIBUTING.md](../CONTRIBUTING.md) says what makes a tool belong here.
