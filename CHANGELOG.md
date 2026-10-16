@@ -8,6 +8,10 @@ Every release is written here, newest first. A version is `MAJOR.MINOR.PATCH`.
 
 ## Unreleased
 
+Nothing yet.
+
+## 0.2.0 (2026-10-16)
+
 Seven new tools:
 
 - `flash` writes a disk image to a USB drive, and reads it back to check it.
