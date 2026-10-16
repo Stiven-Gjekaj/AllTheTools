@@ -8,7 +8,20 @@ Every release is written here, newest first. A version is `MAJOR.MINOR.PATCH`.
 
 ## Unreleased
 
-Nothing yet.
+Seven new tools:
+
+- `flash` writes a disk image to a USB drive, and reads it back to check it.
+- `edid` shows the maker, the model, the serial number and the native mode of
+  each connected display.
+- `free` shows the memory and the swap.
+- `watch` runs a command again and again, and marks what changed.
+- `notify` shows a notification on the desktop.
+- `trash` moves files to the trash of the host, where a person can get them
+  back.
+- `hexdump` shows the bytes of a file with the options of `xxd`, and turns the
+  dump back into bytes.
+
+`att link` makes four more names: `watch`, `xxd`, `free` and `trash`.
 
 ## 0.1.0 (2026-10-10)
 
