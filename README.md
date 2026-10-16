@@ -16,7 +16,7 @@ _One binary. The same command on Windows, on macOS, and on Linux._
 <p align="center">
   <a href="#overview"><b>Overview</b></a> |
   <a href="#install"><b>Install</b></a> |
-  <a href="#the-twenty-tools"><b>Tools</b></a> |
+  <a href="#the-tools"><b>Tools</b></a> |
   <a href="#the-familiar-names"><b>Names</b></a> |
   <a href="#for-a-script"><b>Scripts</b></a> |
   <a href="docs/tools.md"><b>Each tool</b></a>
@@ -27,7 +27,7 @@ _One binary. The same command on Windows, on macOS, and on Linux._
 ---
 
 > [!NOTE]
-> **Twenty tools are built.**
+> **Twenty-seven tools are built.**
 > CI runs each one on Windows, on macOS and on Linux, on each change.
 > The tools that write to a drive are tested against fake drives in memory,
 > and on image files, loop devices and VHDs in CI.
@@ -39,13 +39,13 @@ _One binary. The same command on Windows, on macOS, and on Linux._
 
 ## Overview
 
-**AllTheTools** is one command, `att`, with twenty small tools in it.
+**AllTheTools** is one command, `att`, with twenty-seven small tools in it.
 
 Each tool closes a gap. Linux has `lsusb`, and macOS and Windows do not.
 Linux has `f3probe` to find a fake flash drive, and the other two do not.
 macOS has `caffeinate` and `networkQuality`, and Linux and Windows do not.
-Windows has no `timeout` that stops a command, no `ldd` and no clipboard
-command that pastes.
+Windows has no `timeout` that stops a command, no `ldd`, no `xxd`, no `watch`
+and no clipboard command that pastes.
 
 So the answer to a simple question depends on which computer you sit at, and
 each answer has its own flags to learn. `att` gives one answer: the same
@@ -140,13 +140,14 @@ On Windows, SmartScreen can show "Windows protected your PC". Select
 
 ---
 
-## The twenty tools
+## The tools
 
 | Tool | What it does | The host that has it | The hosts that did not |
 | :-- | :-- | :-- | :-- |
 | `att probe` | Finds the real size of a fake flash drive | Linux: f3probe | macOS, Windows |
 | `att surface` | Reads each sector of a drive, and names the bad ones | Linux: badblocks | macOS, Windows |
 | `att lsblk` | Lists the drives and their partitions as a tree | Linux: lsblk | macOS, Windows |
+| `att flash` | Writes an ISO or IMG to a USB drive, and reads it back to check it | Linux, macOS: dd, with no check | Windows |
 | `att eject` | Unmounts a drive and makes it safe to remove | macOS, Linux | Windows |
 | `att mount` | Attaches an ISO, IMG, DMG or VHD and mounts it | each, with other commands | one command |
 | `att whoholds` | Shows the process that holds a file or a drive | macOS, Linux: lsof, fuser | Windows |
@@ -155,14 +156,20 @@ On Windows, SmartScreen can show "Windows protected your PC". Select
 | `att sensors` | Shows the temperatures and the fans | Linux: sensors | macOS, Windows |
 | `att battery` | Shows the charge, the health and the cycles | each, with other tools | one report |
 | `att ddc` | Sets the brightness and the input of a monitor | Linux: ddcutil | macOS, Windows |
+| `att edid` | Shows the maker, the model, the serial and the native mode of a display | Linux: edid-decode | macOS, Windows |
+| `att free` | Shows the memory and the swap | Linux: free | macOS, Windows |
 | `att netquality` | Measures the speed and the responsiveness | macOS: networkQuality | Linux, Windows |
 | `att wifi` | Lists the Wi-Fi networks near the computer | Linux: nmcli | macOS since 14.4, Windows |
 | `att whoport` | Shows the process of a port, and stops it | each, with other commands | one table |
 | `att wol` | Wakes a computer on the local network | none | macOS, Linux, Windows |
 | `att timeout` | Stops a command when its time runs out | Linux: timeout | macOS, Windows |
+| `att watch` | Runs a command again and again, and marks what changed | Linux: watch | macOS, Windows |
+| `att notify` | Shows a notification on the desktop | Linux: notify-send | macOS, Windows |
 | `att awake` | Keeps the system awake | macOS: caffeinate | Linux, Windows |
 | `att clip` | Copies to the clipboard, and pastes | macOS: pbcopy, pbpaste | Linux, Windows |
 | `att unquarantine` | Removes the download mark of a file | each, with other commands | one command |
+| `att trash` | Moves a file to the trash, where you can get it back | Linux: gio trash; macOS 15: trash | Windows, older macOS |
+| `att hexdump` | Shows the bytes of a file, with the options of xxd | macOS, Linux: xxd | Windows |
 | `att ldd` | Lists the libraries of a binary of any host | Linux: ldd | macOS, Windows |
 
 `att <tool> --help` gives the options of each tool.
@@ -187,6 +194,7 @@ Each disk tool takes a name from that list, a device path, or a mount point:
 `disk4`, `/dev/sdb`, `2` for PhysicalDrive2, or `E:`.
 
 ```bash
+att flash ubuntu.iso disk4 # write an installer to a USB stick, and check it
 att probe disk4            # is this USB stick fake? It writes back what it tests.
 att surface disk4          # read each sector, and name the bad ones
 att surface --write disk4  # write and read back each sector. This erases it.
@@ -195,9 +203,10 @@ att eject disk4
 att mount ubuntu-24.04.iso
 ```
 
-`att probe` and `att surface --write` refuse the disk that your system starts
-from. Nothing allows that write. A drive that the host does not mark as
-removable needs `--force`. Each one asks you to type the name of the drive.
+`att flash`, `att probe` and `att surface --write` refuse the disk that your
+system starts from. Nothing allows that write. A drive that the host does not
+mark as removable needs `--force`. Each one asks you to type the name of the
+drive.
 
 ### Hardware
 
@@ -206,6 +215,8 @@ att lsusb
 att lspci
 att sensors
 att battery
+att free
+att edid
 att ddc set brightness 70
 att ddc set input hdmi2
 ```
@@ -224,6 +235,10 @@ att wol aa:bb:cc:dd:ee:ff
 
 ```bash
 att timeout 10s ./slow-script.sh
+att watch -d -n 1 df -h
+make && att notify "The build is done"
+att trash old-notes.txt
+att hexdump -l 64 disk.img
 att awake --display -- cargo build --release
 echo "some text" | att clip
 att clip paste
@@ -253,7 +268,8 @@ Skipped pbcopy: the host has a program of that name. Add --force to make it anyw
 ```
 
 Then `lsusb`, `lspci`, `lsblk`, `f3probe`, `badblocks`, `sensors`, `ldd`,
-`timeout`, `caffeinate`, `pbcopy` and the others run the tools of `att`. A
+`timeout`, `caffeinate`, `pbcopy`, `watch`, `xxd`, `free`, `trash` and the
+others run the tools of `att`. A
 name that the host has already is skipped. `att link --remove` removes each
 name that runs `att`, and nothing else.
 
@@ -276,7 +292,7 @@ The exit codes:
 | :-- | :-- |
 | 0 | The tool did its work, and it found no problem. |
 | 1 | The tool failed, and the error stream says why. |
-| 2 | The tool did its work, and it found a problem: `surface` found a bad sector, or `probe` found a fake drive. |
+| 2 | The tool did its work, and it found a problem: `surface` found a bad sector, `probe` found a fake drive, or `flash` read back a byte that is not the same. |
 | 124 | `timeout` stopped the command when its time ran out, as GNU `timeout` does. |
 
 ---
@@ -311,5 +327,5 @@ If you find AllTheTools useful, you can support its development here.
 MIT. See [LICENSE](LICENSE) and [TERMS.md](TERMS.md).
 
 <div align="center">
-<sub>Two tools of AllTheTools write to drives. Read TERMS.md before you run them.</sub>
+<sub>Three tools of AllTheTools write to drives. Read TERMS.md before you run them.</sub>
 </div>
