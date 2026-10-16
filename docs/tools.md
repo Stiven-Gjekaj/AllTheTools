@@ -19,8 +19,8 @@ Two kinds of test exist:
   that run happened.
 
 A unit test never opens a device. Each parser has tests with output that a
-real host gave, and the two tools that write have tests against fake drives
-in memory.
+real host gave, and the three tools that write to a drive have tests against
+fake drives in memory.
 
 ---
 
@@ -148,6 +148,25 @@ It found the full size, it wrote back 504 blocks, and `diskutil verifyVolume`
 found the file system correct after. **Not yet tested on a real fake USB
 stick.**
 
+### `att flash`
+
+It writes an image, such as the ISO of a Linux installer, to the start of a
+drive, and then reads the drive back and compares each byte with the image.
+The privilege and the devices are those of `att surface`, and it has the same
+guard: it refuses the system drive, a fixed drive needs `--force`, and the
+person types the name of the drive.
+
+It refuses an image that is on a volume of the target, and an archive such as
+`.gz`, `.xz`, `.zst`, `.bz2` or `.zip`, which it finds by the first bytes of
+the file. Exit code 2 says that a byte read back wrong. A fake drive does
+that, and `att probe` then finds its real size.
+
+Tested: unit tests against drives in memory: an honest drive, a drive that is
+too small, and a fake drive that wraps. CI writes an image to a file on the
+three hosts, and to a block device: a loop device on Linux, the raw node of a
+disk image on macOS, and a VHD on Windows. Hardware: macOS with a file and with
+the raw node of a disk image. **Not yet tested on a real USB drive.**
+
 ---
 
 ## Hardware
@@ -226,6 +245,40 @@ ddcutil sends. CI lists the monitors on the three hosts, and finds none.
 Hardware: macOS lists a monitor through the USB-C Digital AV Adapter, and the
 adapter refuses each request. **Not yet tested with a real monitor that
 answers, on any host.**
+
+### `att edid`
+
+| Host | Source |
+| :-- | :-- |
+| Linux | the `edid` file of each connector in `/sys/class/drm` |
+| macOS | `IOPortTransportState` on Apple silicon and `IODisplay` on Intel, through `ioreg -a` |
+| Windows | the `EDID` value in the device key of each monitor, through SetupAPI |
+
+It reads the base block of EDID 1.3 and 1.4: the maker, the model, the serial
+number, the date, the size, the preferred mode and the ranges. It names each
+extension block, and `--raw` gives the bytes. The built-in display of a laptop
+can give no EDID.
+
+Tested: unit tests with the EDID of a real monitor. CI runs it on the three
+hosts. Hardware: macOS with a portable monitor through a USB-C adapter,
+against the values that the IOKit registry shows. **Not yet tested on Linux
+and Windows hardware.**
+
+### `att free`
+
+| Host | Source |
+| :-- | :-- |
+| Linux | `/proc/meminfo`, with the sums of `free` of procps |
+| macOS | `host_statistics64`, `hw.memsize` and `vm.swapusage` |
+| Windows | `GetPerformanceInfo`, and the page files of `EnumPageFilesW` |
+
+On macOS the used memory is the sum that Activity Monitor shows: the memory of
+the apps, the wired memory and the compressed memory. Windows gives no count of
+the memory that holds nothing, so FREE shows `-` there.
+
+Tested: unit tests with the values of each host. CI checks that the total is
+above zero and that the used memory is not above it, on the three hosts.
+Hardware: macOS, against `vm_stat`.
 
 ---
 
@@ -355,6 +408,63 @@ It reads the binary and runs nothing. The `ldd` of Linux can run the program.
 
 Tested: CI reads the binary of att on the three hosts. Hardware: macOS,
 against `otool -L` for programs of Homebrew.
+
+### `att watch`
+
+It runs the command through `sh -c` on Linux and macOS and through `cmd /C`
+on Windows, as `watch` does, or directly with `-x`. It shows the output and the
+error stream, cut to the size of the terminal. `-d` marks the characters that
+changed, `-g` stops when the output changes, and `-e` stops when the command
+fails, with the exit code of the command.
+
+Tested: unit tests of the screen and the marks. CI checks `-g` and `-e` on the
+three hosts. Hardware: macOS.
+
+### `att notify`
+
+| Host | How |
+| :-- | :-- |
+| Linux | `notify-send`, or the notification server of the desktop through `gdbus` |
+| macOS | `display notification` of AppleScript, through `osascript` |
+| Windows | a toast of Windows Runtime, through PowerShell |
+
+The title and the message go to each host as data, and never into the text of
+a script, so a quote in a message changes nothing. On macOS the notification
+comes from Script Editor, and System Settings can turn those off.
+
+Tested: unit tests of the quotes. CI shows a notification on macOS and
+Windows, and checks the error on a Linux runner with no desktop. Hardware:
+macOS. **Not yet tested on a Linux desktop.**
+
+### `att trash`
+
+| Host | How |
+| :-- | :-- |
+| Linux | the trash of the freedesktop.org specification, which the file managers read |
+| macOS | `trashItemAtURL` of NSFileManager, as the Finder does |
+| Windows | `SHFileOperationW` with the flag that allows an undo |
+
+The Finder and the Recycle Bin can put a file back. On Linux a file on the
+volume of the home folder goes to `~/.local/share/Trash`, and a file on
+another volume goes to `.Trash-<uid>` at the top of that volume. A symbolic
+link goes to the trash, and not the file that it points to. A volume of
+Windows with no Recycle Bin, such as a network share, cannot keep the file,
+and Windows then asks before it deletes the file for good.
+
+Tested: unit tests of the info file and the names. CI moves a file to the
+trash on the three hosts. Hardware: macOS with a file, a folder and a link.
+**Not yet tested on a Linux desktop or on Windows hardware.**
+
+### `att hexdump`
+
+It takes the options of `xxd`: `-c`, `-g`, `-b`, `-u`, `-s`, `-l`, `-p`,
+`-i`, `-n` and `-r`. It writes the same text as `xxd`, and `-r` turns the text
+of a dump or of `-p` back into bytes. With an output file, `-r` changes the
+file at the offsets of the dump and does not cut it short, as `xxd -r` does.
+
+Tested: unit tests with the output of `xxd` 2025-08-24. CI turns a dump back
+into the same bytes on the three hosts. Hardware: macOS, against `xxd` for 15
+sets of options.
 
 ### `att link`
 
