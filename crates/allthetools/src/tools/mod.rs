@@ -15,6 +15,7 @@ pub mod lspci;
 pub mod lsusb;
 pub mod mount;
 pub mod netquality;
+pub mod notify;
 pub mod probe;
 pub mod sensors;
 pub mod surface;
