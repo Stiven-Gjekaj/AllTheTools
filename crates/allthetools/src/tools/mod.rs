@@ -20,6 +20,7 @@ pub mod probe;
 pub mod sensors;
 pub mod surface;
 pub mod timeout;
+pub mod trash;
 pub mod unquarantine;
 pub mod watch;
 pub mod whoholds;
