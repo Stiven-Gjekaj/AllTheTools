@@ -65,8 +65,9 @@ It refuses the system drive. On Windows, a program that holds a file makes
 Windows refuse, and `att whoholds E:` names that program.
 
 Tested: CI checks the refusal of the system drive on the three hosts, and
-ejects a disk image on macOS. Hardware: macOS with a disk image.
-**Not yet tested on a real USB drive on Linux and on Windows.**
+ejects a disk image on macOS. Hardware: macOS with a disk image, and with a
+126 GB USB stick. **Not yet tested on a real USB drive on Linux and on
+Windows.**
 
 ### `att mount`
 
@@ -142,7 +143,10 @@ keeps each byte. CI probes an image of random bytes on the three hosts, and a
 block device: a loop device on Linux, the raw node of an image on macOS, and a
 VHD on Windows. The SHA-256 of the image is the same before and after.
 Hardware: macOS with an image file and with the raw node of a disk image, with
-the same check of the hash. **Not yet tested on a real fake USB stick.**
+the same check of the hash. Hardware: macOS with an honest 126 GB USB stick.
+It found the full size, it wrote back 504 blocks, and `diskutil verifyVolume`
+found the file system correct after. **Not yet tested on a real fake USB
+stick.**
 
 ---
 
@@ -213,11 +217,15 @@ laptops.**
 | Windows | the Monitor Configuration API of dxva2 | none |
 
 An Intel Mac has no IOAVService. The built-in display of a laptop has no
-DDC/CI. A monitor can have DDC/CI off in its menu.
+DDC/CI. A monitor can have DDC/CI off in its menu. An adapter or a dock can
+carry the picture and not DDC/CI. The USB-C Digital AV Adapter of Apple is
+one, and m1ddc fails through it in the same way.
 
 Tested: unit tests check the bytes of each message against the bytes that
 ddcutil sends. CI lists the monitors on the three hosts, and finds none.
-**Not yet tested with a real monitor on any host.**
+Hardware: macOS lists a monitor through the USB-C Digital AV Adapter, and the
+adapter refuses each request. **Not yet tested with a real monitor that
+answers, on any host.**
 
 ---
 
