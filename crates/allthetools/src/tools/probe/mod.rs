@@ -6,7 +6,7 @@
 //! the whole drive, which takes hours. Windows has H2testw, which also
 //! fills the whole drive. This tool does the test of f3probe on each host.
 //!
-//! It writes to about 300 blocks of the drive, and it writes back what was
+//! It writes to a few hundred blocks of the drive, and it writes back what was
 //! there before. algo.rs says what the test finds and what it can miss.
 
 use anyhow::Result;
@@ -35,7 +35,7 @@ pub fn run(args: Args) -> Result<i32> {
     guard::check(&target, args.force)?;
     guard::ask(
         &target,
-        "This writes test data to about 300 blocks of the target, and then writes back \
+        "This writes test data to a few hundred blocks of the target, and then writes back \
          what was there. A fake drive can lose data that it already holds, because that \
          is what makes it fake. Keep a copy of anything on it that you value.",
     )?;

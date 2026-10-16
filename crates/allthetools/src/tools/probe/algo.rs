@@ -6,7 +6,7 @@
 //! power of two, because the controller ignores the high bits of the
 //! address. This test finds both kinds, as f3probe of Linux does:
 //!
-//! 1. It reads the samples: about 256 blocks across the drive, at a step
+//! 1. It reads the samples: 256 to 512 blocks across the drive, at a step
 //!    that is a power of two, and each power of two below the step. It keeps
 //!    a copy of each one. Each place that a sample can wrap to is a sample
 //!    too, so a drive that wraps at a power of two puts each marker on a
