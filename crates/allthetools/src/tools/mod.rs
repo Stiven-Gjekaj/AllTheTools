@@ -7,6 +7,7 @@ pub mod clip;
 pub mod ddc;
 pub mod edid;
 pub mod eject;
+pub mod flash;
 pub mod free;
 pub mod hexdump;
 pub mod ldd;
