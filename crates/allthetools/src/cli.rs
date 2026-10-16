@@ -58,6 +58,9 @@ pub enum Command {
     Surface(tools::surface::Args),
     /// Run a command, and stop it when its time runs out.
     Timeout(tools::timeout::Args),
+    /// Move files and folders to the trash, where a person can get them
+    /// back.
+    Trash(tools::trash::Args),
     /// Remove the download mark from files, so the system starts them
     /// without a warning.
     Unquarantine(tools::unquarantine::Args),

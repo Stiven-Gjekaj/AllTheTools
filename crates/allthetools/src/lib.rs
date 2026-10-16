@@ -44,6 +44,7 @@ pub fn run() -> i32 {
         Command::Sensors(args) => tools::sensors::run(args),
         Command::Surface(args) => tools::surface::run(args),
         Command::Timeout(args) => tools::timeout::run(args),
+        Command::Trash(args) => tools::trash::run(args),
         Command::Unquarantine(args) => tools::unquarantine::run(args),
         Command::Watch(args) => tools::watch::run(args),
         Command::Whoholds(args) => tools::whoholds::run(args),
