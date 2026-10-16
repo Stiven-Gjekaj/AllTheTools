@@ -6,6 +6,7 @@ pub mod battery;
 pub mod clip;
 pub mod ddc;
 pub mod eject;
+pub mod hexdump;
 pub mod ldd;
 pub mod link;
 pub mod lsblk;
