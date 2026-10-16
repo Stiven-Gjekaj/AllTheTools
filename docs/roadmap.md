@@ -4,7 +4,8 @@
 
 # The roadmap
 
-The twenty tools are built, and CI runs them on the three hosts on each change.
+The twenty-seven tools are built, and CI runs them on the three hosts on each
+change.
 This file says what comes next, in order.
 
 ## 1. Tests on real hardware
@@ -17,8 +18,10 @@ card. These tests wait for a person with the hardware, and
 | --- | --- | --- |
 | `att probe` on a real fake USB stick | each | the usable size agrees with `f3probe` on Linux, or with H2testw on Windows |
 | `att probe` on a real honest USB stick | Linux, Windows | it passes, and the files on the stick are the same after |
+| `att flash` of an installer to a real USB drive | each | the computer starts from the drive |
 | `att surface` on a real USB drive | each | it reads each sector, and `--write` erases and checks it |
 | `att eject` on a real USB drive | Linux, Windows | the drive is safe to remove, and the host says so |
+| `att edid` with a real monitor | Linux, Windows | the values agree with `edid-decode` on Linux |
 | `att ddc` with a real monitor | each | `get brightness` agrees with the menu of the monitor, and `set` changes it |
 | `att wifi` with a real card | Linux, Windows | the list agrees with the networks of the host |
 | `att battery` on a real laptop | Linux, Windows | the health agrees with `upower` or `powercfg /batteryreport` |
@@ -26,6 +29,8 @@ card. These tests wait for a person with the hardware, and
 | `att wol` to a real computer | each | the computer wakes |
 | `att clip` on a Linux desktop | Linux | a line copies and pastes on Wayland and on X11 |
 | `att awake` on a Linux desktop | Linux | logind shows the lock in `systemd-inhibit --list` |
+| `att notify` on a Linux desktop | Linux | the notification shows, with `notify-send` and with `gdbus` |
+| `att trash` on a desktop | Linux, Windows | the file manager shows the file in the trash, and puts it back |
 
 ## 2. Closer to the API of the host
 
@@ -49,6 +54,3 @@ Ideas that wait for an issue:
 
 - `att smart`: the health of a drive. OnyxDiskInfo does this already, so it
   stays out of AllTheTools for now.
-- `att hexdump` with the options of `xxd`, which Windows does not have.
-- `att trash`: move a file to the recycle bin, which Linux has as `gio trash`
-  and a new macOS has as `trash`, and which Windows has no command for.
