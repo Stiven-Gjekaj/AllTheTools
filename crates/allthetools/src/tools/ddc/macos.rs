@@ -140,7 +140,11 @@ fn write(monitor: &Monitor, message: &[u8]) -> Result<()> {
         }
     }
     if status != 0 {
-        bail!("the display took no request ({status:#x}). It may have DDC/CI off in its menu");
+        bail!(
+            "the display took no request ({status:#x}). It may have DDC/CI off in its menu, \
+             or an adapter or a dock between the Mac and the display may not carry DDC/CI. \
+             Connect the display direct, or with a USB-C to DisplayPort cable"
+        );
     }
     Ok(())
 }
