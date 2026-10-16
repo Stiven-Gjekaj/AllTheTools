@@ -184,7 +184,7 @@ jobs:
             dist/*.rpm
 
       # A draft, so that a person reads the assets before anybody else can
-      # download them. Two tools of att write to drives.
+      # download them. Three tools of att write to drives.
       - name: open the draft release
         shell: bash
         env:

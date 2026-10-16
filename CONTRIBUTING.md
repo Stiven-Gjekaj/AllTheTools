@@ -53,8 +53,8 @@ here.
 
 **A test never writes to a real device.**
 
-Two tools write to a block device: `att probe` and, with an option,
-`att surface`.
+Three tools write to a block device: `att probe`, `att flash` and, with an
+option, `att surface`.
 A test suite that touches a block device can destroy the disk of the person who
 runs it.
 A continuous integration machine has a system disk, and that disk is a block

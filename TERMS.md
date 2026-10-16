@@ -46,6 +46,10 @@ These tools change data or state:
   that data. A fake drive can also lose data that it already held, because
   that is what makes it fake.
 - `att surface --write` writes to each block of a drive, and erases the drive.
+- `att flash` writes an image over the start of a drive, and erases what the
+  drive held.
+- `att trash` moves files to the trash of the host. Emptying the trash
+  deletes them.
 - `att eject` and `att mount` change what the system mounts.
 - `att whoport --kill` and `att timeout` stop a process.
 - `att ddc set` changes a setting of a monitor.

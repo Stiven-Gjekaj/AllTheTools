@@ -25,24 +25,26 @@ stay anonymous.
 
 ## The threat model
 
-AllTheTools is twenty small tools in one binary. Most of them only read.
+AllTheTools is twenty-seven small tools in one binary. Most of them only read.
 Read this before you report.
 
 **Some tools need high privilege.**
-`att probe` and `att surface` open a raw device, so they need root rights on
-macOS and on Linux, and administrator rights on Windows.
+`att probe`, `att flash` and `att surface` open a raw device, so they need
+root rights on macOS and on Linux, and administrator rights on Windows.
 `att whoholds` and `att whoport` see more processes with high privilege.
 That is the job, and it is not a defect.
 The question that matters is what the tool does with those rights.
 
 **The worst outcome is a write to the wrong device.**
 `att probe` writes to a drive, and it puts back what it wrote over.
+`att flash` writes an image over the start of a drive, and erases it.
 A bug that selects the wrong target, or that does not put the data back,
 destroys data that the person did not choose.
 This is the highest severity problem that this project can have.
 
 **A system disk is never a target.**
-`att probe` refuses the disk that the running system starts from.
+`att probe`, `att flash` and `att surface --write` refuse the disk that the
+running system starts from.
 A way around that refusal is a vulnerability, not a feature request.
 
 **The input is untrusted.**
