@@ -44,6 +44,7 @@ pub fn run() -> i32 {
         Command::Surface(args) => tools::surface::run(args),
         Command::Timeout(args) => tools::timeout::run(args),
         Command::Unquarantine(args) => tools::unquarantine::run(args),
+        Command::Watch(args) => tools::watch::run(args),
         Command::Whoholds(args) => tools::whoholds::run(args),
         Command::Whoport(args) => tools::whoport::run(args),
         Command::Wifi(args) => tools::wifi::run(args),

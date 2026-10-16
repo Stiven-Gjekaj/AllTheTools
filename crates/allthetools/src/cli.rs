@@ -59,6 +59,9 @@ pub enum Command {
     /// Remove the download mark from files, so the system starts them
     /// without a warning.
     Unquarantine(tools::unquarantine::Args),
+    /// Run a command again and again, and show its output on a clear
+    /// screen.
+    Watch(tools::watch::Args),
     /// Show which process holds a file, a folder or a drive open.
     Whoholds(tools::whoholds::Args),
     /// Show which process listens on a port, and stop it when asked.

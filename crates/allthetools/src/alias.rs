@@ -10,7 +10,7 @@
 use std::ffi::OsString;
 
 /// Each familiar name, and the command of att that it runs.
-pub const ALIASES: [(&str, &[&str]); 20] = [
+pub const ALIASES: [(&str, &[&str]); 21] = [
     ("badblocks", &["surface"]),
     ("caffeinate", &["awake"]),
     ("ddcutil", &["ddc"]),
@@ -29,6 +29,7 @@ pub const ALIASES: [(&str, &[&str]); 20] = [
     ("timeout", &["timeout"]),
     ("unquarantine", &["unquarantine"]),
     ("wakeonlan", &["wol"]),
+    ("watch", &["watch"]),
     ("whoport", &["whoport"]),
     ("xxd", &["hexdump"]),
 ];
