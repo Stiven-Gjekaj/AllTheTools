@@ -27,6 +27,9 @@ pub enum Command {
     Ddc(tools::ddc::Args),
     /// Unmount each volume of a drive, and make the drive safe to remove.
     Eject(tools::eject::Args),
+    /// Show the bytes of a file as hex, as xxd does, or turn the hex back
+    /// into bytes.
+    Hexdump(tools::hexdump::Args),
     /// List the libraries that a binary needs, and where each one is.
     Ldd(tools::ldd::Args),
     /// Make the familiar names, such as lsusb and f3probe, run att.

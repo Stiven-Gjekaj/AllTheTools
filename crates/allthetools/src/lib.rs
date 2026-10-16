@@ -30,6 +30,7 @@ pub fn run() -> i32 {
         Command::Clip(args) => tools::clip::run(args),
         Command::Ddc(args) => tools::ddc::run(args),
         Command::Eject(args) => tools::eject::run(args),
+        Command::Hexdump(args) => tools::hexdump::run(args),
         Command::Ldd(args) => tools::ldd::run(args),
         Command::Link(args) => tools::link::run(args),
         Command::Lsblk(args) => tools::lsblk::run(args),
