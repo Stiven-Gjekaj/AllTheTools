@@ -359,6 +359,102 @@ rm -rf "$probe_dir"
 # so.
 step ddc list
 
+# hexdump writes the dump of a file, and the reverse gives the same bytes.
+hex_dir="$(mktemp -d)"
+head -c 5000 /dev/urandom > "$hex_dir/data.bin"
+step hexdump -l 64 "$hex_dir/data.bin"
+"$ATT" hexdump "$hex_dir/data.bin" | "$ATT" hexdump -r > "$hex_dir/back.bin"
+cmp "$hex_dir/data.bin" "$hex_dir/back.bin"
+"$ATT" hexdump -p "$hex_dir/data.bin" | "$ATT" hexdump -r -p > "$hex_dir/plain.bin"
+cmp "$hex_dir/data.bin" "$hex_dir/plain.bin"
+rm -rf "$hex_dir"
+
+# free reads the memory of the host. Each runner has memory, and the JSON
+# must give a total above zero.
+step free
+step free --json
+"$ATT" free --json | "$PY" -c 'import json, sys; m = json.load(sys.stdin); assert m["total"] > 0 and m["used"] <= m["total"], m'
+
+# watch stops when the output changes, and when the command fails it gives
+# the exit code of the command.
+step watch -g -n 0.2 -x "$PY" -c 'import time; print(time.time())'
+set +e
+"$ATT" watch -e -n 0.2 -x "$PY" -c 'import sys; sys.exit(3)' > /dev/null
+code=$?
+set -e
+if [ "$code" != 3 ]; then
+    echo "att watch -e gave $code for a command that gave 3" >&2
+    exit 1
+fi
+
+# edid reads the displays. A runner can have none, and the tool says so.
+step edid
+step edid --json
+
+# notify and trash change the desktop of the person, so they run only in CI.
+# A Linux runner has no desktop session, and notify must say so.
+case "${CI:-}-$(uname -s)" in
+    -*) ;;
+    *-Linux)
+        if out="$("$ATT" notify "att smoke" 2>&1)"; then
+            echo "att notify showed a notification with no desktop session: $out" >&2
+            exit 1
+        fi
+        echo "$out"
+        ;;
+    *) step notify -t "att smoke" "CI checks att notify" ;;
+esac
+if [ -n "${CI:-}" ]; then
+    trash_dir="$(mktemp -d)"
+    echo "att smoke" > "$trash_dir/trash me.txt"
+    step trash -v "$trash_dir/trash me.txt"
+    test ! -e "$trash_dir/trash me.txt"
+    if [ "$(uname -s)" = Linux ]; then
+        ls ~/.local/share/Trash/info/ "$trash_dir"/../.Trash-* 2>/dev/null || true
+    fi
+    if "$ATT" trash "$trash_dir/no such file" 2>/dev/null; then
+        echo "att trash took a path that does not exist" >&2
+        exit 1
+    fi
+    rm -rf "$trash_dir"
+fi
+
+# flash writes an image to a file, and to a block device that backs a file:
+# a loop device on Linux, the raw node of an image on macOS, and an attached
+# VHD on Windows. flash reads each one back itself, and gives exit code 2 if
+# a byte differs.
+flash_dir="$(mktemp -d)"
+head -c 10000001 /dev/urandom > "$flash_dir/in.img"
+head -c 33554432 /dev/zero > "$flash_dir/out.img"
+printf 'out.img\n' | "$ATT" flash "$flash_dir/in.img" "$flash_dir/out.img"
+head -c 10000001 "$flash_dir/out.img" | cmp - "$flash_dir/in.img"
+case "$(uname -s)" in
+    Linux)
+        loop="$(sudo losetup --find --show "$flash_dir/out.img")"
+        echo "::group::sudo att flash $loop"
+        printf '%s\n' "${loop#/dev/}" | sudo "$ATT" flash --force "$flash_dir/in.img" "$loop"
+        echo "::endgroup::"
+        sudo losetup --detach "$loop"
+        ;;
+    Darwin)
+        device="$(hdiutil attach -nobrowse -nomount -imagekey diskimage-class=CRawDiskImage "$flash_dir/out.img" | awk 'NR == 1 { print $1 }')"
+        echo "::group::att flash $device"
+        printf '%s\n' "${device#/dev/}" | "$ATT" flash "$flash_dir/in.img" "$device"
+        echo "::endgroup::"
+        hdiutil detach "$device" > /dev/null
+        ;;
+    *)
+        vhd_attach "$flash_dir/flash.vhd"
+        number="$("$ATT" lsblk --json | "$PY" -c 'import json, sys; print([d["id"] for d in json.load(sys.stdin) if d["virtual_disk"]][-1])')"
+        echo "::group::att flash $number"
+        printf '%s\n' "$number" | "$ATT" flash --force "$flash_dir/in.img" "$number"
+        echo "::endgroup::"
+        vhd_detach "$flash_dir/flash.vhd"
+        ;;
+esac
+head -c 10000001 "$flash_dir/out.img" | cmp - "$flash_dir/in.img"
+rm -rf "$flash_dir"
+
 # link makes the familiar names in a directory of this script, runs one of
 # them, and removes them all.
 link_dir="$(mktemp -d)"
