@@ -30,6 +30,8 @@ pub enum Command {
     Edid(tools::edid::Args),
     /// Unmount each volume of a drive, and make the drive safe to remove.
     Eject(tools::eject::Args),
+    /// Write a disk image to a drive, and read it back to check it.
+    Flash(tools::flash::Args),
     /// Show the memory and the swap of this computer.
     Free(tools::free::Args),
     /// Show the bytes of a file as hex, as xxd does, or turn the hex back
