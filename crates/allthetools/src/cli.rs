@@ -27,6 +27,8 @@ pub enum Command {
     Ddc(tools::ddc::Args),
     /// Unmount each volume of a drive, and make the drive safe to remove.
     Eject(tools::eject::Args),
+    /// Show the memory and the swap of this computer.
+    Free(tools::free::Args),
     /// Show the bytes of a file as hex, as xxd does, or turn the hex back
     /// into bytes.
     Hexdump(tools::hexdump::Args),
