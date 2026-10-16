@@ -62,7 +62,9 @@ pub fn gdbus_args(title: &str, message: &str) -> Vec<String> {
     .iter()
     .map(|s| (*s).to_owned())
     .chain([gvariant_string(title), gvariant_string(message)])
-    .chain(["[]", "{}", "-1"].iter().map(|s| (*s).to_owned()))
+    // The timeout is written with its type, because gdbus reads an argument
+    // that starts with a hyphen as an option.
+    .chain(["[]", "{}", "int32 -1"].iter().map(|s| (*s).to_owned()))
     .collect()
 }
 
@@ -82,7 +84,11 @@ mod tests {
         let args = gdbus_args("Build", "done");
         assert_eq!(args[11], "'Build'");
         assert_eq!(args[12], "'done'");
-        assert_eq!(args.last().map(String::as_str), Some("-1"));
+        assert!(
+            args.iter()
+                .all(|a| !a.starts_with('-') || a.starts_with("--"))
+        );
+        assert_eq!(args.last().map(String::as_str), Some("int32 -1"));
     }
 
     #[test]

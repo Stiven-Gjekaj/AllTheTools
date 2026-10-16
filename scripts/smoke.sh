@@ -401,6 +401,12 @@ case "${CI:-}-$(uname -s)" in
             exit 1
         fi
         echo "$out"
+        # The error must come from the missing session, and not from a bad
+        # call of gdbus, which prints its usage.
+        if echo "$out" | grep -q "Usage"; then
+            echo "att notify called gdbus with bad arguments" >&2
+            exit 1
+        fi
         ;;
     *) step notify -t "att smoke" "CI checks att notify" ;;
 esac
