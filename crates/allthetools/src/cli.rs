@@ -25,6 +25,9 @@ pub enum Command {
     /// Read and set the brightness, the contrast, the volume and the input
     /// of an external monitor.
     Ddc(tools::ddc::Args),
+    /// Show the maker, the model, the serial number and the native mode of
+    /// each connected display.
+    Edid(tools::edid::Args),
     /// Unmount each volume of a drive, and make the drive safe to remove.
     Eject(tools::eject::Args),
     /// Show the memory and the swap of this computer.
