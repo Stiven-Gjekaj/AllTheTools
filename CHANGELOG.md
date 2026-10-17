@@ -8,6 +8,10 @@ Every release is written here, newest first. A version is `MAJOR.MINOR.PATCH`.
 
 ## Unreleased
 
+Nothing yet.
+
+## 0.4.0 (2026-10-17)
+
 - [docs/json.md](docs/json.md) names each field of the JSON output of each
   tool, and a test holds each name.
 - A test gives each parser input at random. It found a panic of `lscpu` on
