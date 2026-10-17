@@ -8,6 +8,10 @@ Every release is written here, newest first. A version is `MAJOR.MINOR.PATCH`.
 
 ## Unreleased
 
+Nothing yet.
+
+## 0.5.0 (2026-10-17)
+
 - `lsusb` and `lspci` on Windows read the devices through SetupAPI, and do
   not start PowerShell. The output is the same, and CI checks it against the
   list of WMI.
