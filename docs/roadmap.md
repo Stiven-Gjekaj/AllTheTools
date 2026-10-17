@@ -8,22 +8,15 @@ The thirty-five tools are built, and CI runs them on the three hosts on each
 change.
 This file says what comes next, in order.
 
-## The way to 1.0
+## Version 1.0
 
 Version 1.0 is a promise: the name of each tool, its options, its exit codes
 and the fields of its JSON stay the same for each 1.x release. A new tool, a
 new option or a new field can come in 1.x. A change that breaks a script that
-works needs 2.0. [docs/stability.md](stability.md) gives the rules.
+works needs 2.0. [docs/stability.md](stability.md) gives the rules, and
+[CHANGELOG.md](../CHANGELOG.md) gives the way from 0.1 to 1.0.
 
-| Version | What it adds |
-| --- | --- |
-| 0.3 | Eight tools: `df`, `du`, `hash`, `lscpu`, `ip`, `flushdns`, `say` and `uptime`. |
-| 0.4 | The contract: [docs/json.md](json.md) names each field of each JSON output, tests hold each field, and tests give the parsers bytes at random. |
-| 0.5 | `att lsusb` and `att lspci` on Windows read SetupAPI and not PowerShell, with the same output. |
-| 0.9 | The release candidate: the stability rules, and the known limits of each tool. No new tool and no new option until 1.0. |
-| 1.0 | The promise starts. |
-
-1.0 does not wait for the tests on real hardware below. Each test that passes
+1.0 did not wait for the tests on real hardware below. Each test that passes
 goes into [docs/tools.md](tools.md). A fault that a test finds is a fix in a
 1.0.x release.
 

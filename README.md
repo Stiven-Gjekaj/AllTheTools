@@ -27,8 +27,11 @@ _One binary. The same command on Windows, on macOS, and on Linux._
 ---
 
 > [!NOTE]
-> **Thirty-five tools are built.**
-> CI runs each one on Windows, on macOS and on Linux, on each change.
+> **Version 1.0: thirty-five tools.**
+> Each 1.x release keeps the tools, their options, the exit codes and the
+> fields of the JSON output the same. [docs/stability.md](docs/stability.md)
+> gives the rules.
+> CI runs each tool on Windows, on macOS and on Linux, on each change.
 > The tools that write to a drive are tested against fake drives in memory,
 > and on image files, loop devices and VHDs in CI.
 > [docs/tools.md](docs/tools.md) says how each tool works on each host, and
