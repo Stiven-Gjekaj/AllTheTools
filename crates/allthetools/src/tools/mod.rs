@@ -13,6 +13,7 @@ pub mod flash;
 pub mod free;
 pub mod hash;
 pub mod hexdump;
+pub mod ip;
 pub mod ldd;
 pub mod link;
 pub mod lsblk;
