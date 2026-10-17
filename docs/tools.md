@@ -167,6 +167,36 @@ three hosts, and to a block device: a loop device on Linux, the raw node of a
 disk image on macOS, and a VHD on Windows. Hardware: macOS with a file and with
 the raw node of a disk image. **Not yet tested on a real USB drive.**
 
+### `att df`
+
+| Host | Source |
+| :-- | :-- |
+| Linux | `/proc/self/mounts`, and `statvfs` of each mount point |
+| macOS | `getmntinfo`, and `getattrlist` with `ATTR_VOL_SPACEUSED` |
+| Windows | each drive letter, with `GetVolumeInformationW` and `GetDiskFreeSpaceExW` |
+
+The volumes of APFS share the space of their container. On macOS the used
+space of a volume comes from `ATTR_VOL_SPACEUSED`, as `df` of macOS reads it,
+so each volume shows its own use and the free space of the container. A path
+selects the volume that holds it. On macOS `statfs` finds that volume, because
+the firmlinks of the system and data volumes share one device number. A volume
+with no size, such as proc, shows only with `--all`.
+
+Tested: unit tests of the mount lines and the percentages. CI checks the
+volumes on the three hosts. Hardware: macOS, against `df -k` to the byte.
+
+### `att du`
+
+It walks each path, and lists its largest entries down to `--depth`, the
+largest first. On Linux and macOS a size is the space on the disk, as `du`
+counts it, and a file with more than one hard link counts one time.
+`--apparent-size` counts the length of each file. Windows gives the length of
+each file. It does not follow a symbolic link, and `-x` stays on one volume.
+An entry that it cannot read gives a warning and exit code 1, as `du` does.
+
+Tested: unit tests of the sums. CI adds up a folder of known sizes on the
+three hosts. Hardware: macOS, against `du -sk` to the KiB.
+
 ---
 
 ## Hardware
@@ -280,6 +310,23 @@ Tested: unit tests with the values of each host. CI checks that the total is
 above zero and that the used memory is not above it, on the three hosts.
 Hardware: macOS, against `vm_stat`.
 
+### `att lscpu`
+
+| Host | Source |
+| :-- | :-- |
+| Linux | `/proc/cpuinfo`, and the topology and the caches in `/sys/devices/system/cpu` |
+| macOS | the `hw` and `machdep` values of sysctl, with each performance level |
+| Windows | `GetLogicalProcessorInformationEx`, and the registry key of the first processor |
+
+It shows the kinds of cores of a processor that has more than one, such as the
+performance and the efficiency cores of Apple and Intel. A cache that some
+cores share counts one time. Linux on Arm gives numbers for the maker and the
+part, and the tool names the common ones.
+
+Tested: unit tests with the values of an Apple M5, of a Linux server and of
+records of Windows. CI on the three hosts. Hardware: macOS on an Apple M5,
+against sysctl.
+
 ---
 
 ## Network
@@ -338,6 +385,36 @@ SecureOn password. It uses the standard library only.
 
 Tested: a unit test sends the packet to a socket on the loopback address and
 reads it whole. **Not yet tested to wake a real computer.**
+
+### `att ip`
+
+| Host | Source |
+| :-- | :-- |
+| Linux | `getifaddrs`, with `AF_PACKET` for the hardware address and sysfs for the MTU |
+| macOS | `getifaddrs`, with `AF_LINK` for the hardware address and the MTU |
+| Windows | `GetAdaptersAddresses` |
+
+It shows one row for each address, IPv4 first. The state is `up`, `no link`
+when the interface is on and has no carrier, or `down`. `--up` hides the
+interfaces that are not up.
+
+Tested: unit tests of the prefixes, the hardware addresses and the join of the
+parts. CI finds the loopback address on the three hosts. Hardware: macOS,
+against `ifconfig`.
+
+### `att flushdns`
+
+| Host | How | Privilege |
+| :-- | :-- | :-- |
+| Linux | `resolvectl flush-caches` of systemd-resolved, or `nscd -i hosts` | root, or the rules of polkit |
+| macOS | `dscacheutil -flushcache`, and a hang-up signal to mDNSResponder | root |
+| Windows | `ipconfig /flushdns` | none |
+
+A Linux host with no systemd-resolved and no nscd keeps no DNS cache, and the
+tool says so.
+
+Tested: unit tests of the order of the methods. CI flushes the cache on the
+three hosts, with sudo on Linux and macOS.
 
 ---
 
@@ -465,6 +542,48 @@ file at the offsets of the dump and does not cut it short, as `xxd -r` does.
 Tested: unit tests with the output of `xxd` 2025-08-24. CI turns a dump back
 into the same bytes on the three hosts. Hardware: macOS, against `xxd` for 15
 sets of options.
+
+### `att hash`
+
+It gives the SHA-256 of each file by default, and `-a` takes `md5`, `sha1`
+and `sha512`. The output is the form of `sha256sum`. `-c` checks a list in the
+form of GNU or of BSD, and finds the algorithm of each line from its length or
+its tag. The names in a list are relative to the folder of the list. Exit code
+2 says that a file did not match. The algorithms are in the code of the tool,
+and need no library.
+
+Tested: unit tests with the vectors of RFC 1321 and FIPS 180-4. CI compares
+each algorithm with `hashlib` of Python, and checks a list, on the three
+hosts. Hardware: macOS, against `shasum` and `md5` on a file of 300 MB.
+
+### `att say`
+
+| Host | How |
+| :-- | :-- |
+| Linux | `espeak-ng`, `espeak` or `spd-say`, whichever the host has first |
+| macOS | `say` |
+| Windows | the SpeechSynthesizer of System.Speech, through PowerShell |
+
+`--rate` is in words per minute, and the tool turns it into the scale of
+speech-dispatcher and of Windows. `-o` writes a WAV file and plays nothing.
+spd-say cannot write a file.
+
+Tested: unit tests of the speed scales and the arguments. CI writes a WAV file
+on macOS and Windows, and checks the error on a Linux runner with no speech
+program. Hardware: macOS.
+
+### `att uptime`
+
+| Host | Source |
+| :-- | :-- |
+| Linux | `/proc/uptime` and `/proc/loadavg` |
+| macOS | `kern.boottime` of sysctl, and `getloadavg` |
+| Windows | `GetTickCount64` |
+
+The time of the start is in UTC. Windows has no load average.
+
+Tested: unit tests of the durations and of the dates, against `date -u`. CI
+on the three hosts. Hardware: macOS, against `uptime`.
 
 ### `att link`
 
