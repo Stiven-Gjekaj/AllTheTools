@@ -16,6 +16,7 @@ pub mod hexdump;
 pub mod ldd;
 pub mod link;
 pub mod lsblk;
+pub mod lscpu;
 pub mod lspci;
 pub mod lsusb;
 pub mod mount;
