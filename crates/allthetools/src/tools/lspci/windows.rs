@@ -1,16 +1,10 @@
-//! The host file of `att lspci` on Windows: the class Win32_PnPEntity of
-//! WMI, as PowerShell gives it in JSON.
+//! The host file of `att lspci` on Windows: the present devices of the PCI
+//! enumerator of the PnP manager, through SetupAPI.
 
 use anyhow::Result;
 
-use crate::host;
+use crate::pnp::{self, Row};
 
-pub fn read() -> Result<String> {
-    host::powershell(
-        r"ConvertTo-Json -Compress -InputObject @(
-            Get-CimInstance Win32_PnPEntity |
-            Where-Object { $_.PNPDeviceID -like 'PCI\*' } |
-            Select-Object PNPDeviceID, Name, Manufacturer, CompatibleID
-        )",
-    )
+pub fn read() -> Result<Vec<Row>> {
+    pnp::list("PCI")
 }

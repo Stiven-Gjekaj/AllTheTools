@@ -327,8 +327,10 @@ fn json_parsers_take_any_json() {
             serde_json::Value::Array((0..c.below(4)).map(|_| json_value(&mut c, 1)).collect())
         };
         let text = value.to_string();
-        let _ = tools::lsusb::parse::windows(&text);
-        let _ = tools::lspci::parse::windows(&text);
+        if let Ok(rows) = crate::pnp::from_json(&text) {
+            let _ = tools::lsusb::parse::windows(&rows);
+            let _ = tools::lspci::parse::windows(&rows);
+        }
         let _ = tools::battery::parse::windows(&text);
         let _ = tools::sensors::parse::windows(&text);
         let _ = tools::mount::parse::windows(&text, "x");

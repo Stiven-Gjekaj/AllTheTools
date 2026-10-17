@@ -62,5 +62,5 @@ fn devices() -> Result<Vec<Device>> {
 
 #[cfg(windows)]
 fn devices() -> Result<Vec<Device>> {
-    parse::windows(&windows::read()?)
+    Ok(parse::windows(&windows::read()?))
 }

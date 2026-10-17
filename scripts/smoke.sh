@@ -126,6 +126,55 @@ step lsusb --json
 step lspci
 step lspci --json
 
+# On Windows, lsusb and lspci read SetupAPI. The list must agree with the
+# devices of Win32_PnPEntity, which the tools read through PowerShell up to
+# version 0.4: the same IDs and the same names.
+case "$(uname -s)" in
+    Linux | Darwin) ;;
+    *)
+        pnp_dir="$(mktemp -d)"
+        cat > "$pnp_dir/pnp.ps1" <<'PS1'
+param($Bus)
+ConvertTo-Json -Compress -InputObject @(
+    Get-CimInstance Win32_PnPEntity |
+    Where-Object { $_.PNPDeviceID -like "$Bus\*" } |
+    Select-Object PNPDeviceID, Name
+)
+PS1
+        for bus in USB PCI; do
+            powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$pnp_dir/pnp.ps1")" -Bus "$bus" > "$pnp_dir/$bus.cim.json"
+        done
+        "$ATT" lsusb --json > "$pnp_dir/USB.att.json"
+        "$ATT" lspci --json > "$pnp_dir/PCI.att.json"
+        "$PY" - "$pnp_dir" <<'PY'
+import json, re, sys
+d = sys.argv[1]
+def cim(bus):
+    text = open(f"{d}/{bus}.cim.json", encoding="utf-8-sig").read().strip()
+    return json.loads(text) if text else []
+def ids(rows, key_a, key_b):
+    out = []
+    for r in rows:
+        i = (r.get("PNPDeviceID") or "").upper()
+        if "&MI_" in i:
+            continue
+        a, b = re.search(key_a + "([0-9A-F]{4})", i), re.search(key_b + "([0-9A-F]{4})", i)
+        if a and b:
+            out.append((int(a.group(1), 16), int(b.group(1), 16), (r.get("Name") or "").strip() or None))
+    return sorted(out, key=str)
+usb_cim = ids(cim("USB"), "VID_", "PID_")
+pci_cim = ids(cim("PCI"), "VEN_", "DEV_")
+usb_att = sorted(((x["vendor_id"], x["product_id"], x["product"]) for x in json.load(open(f"{d}/USB.att.json"))), key=str)
+pci_att = sorted(((x["vendor_id"], x["device_id"], x["device"]) for x in json.load(open(f"{d}/PCI.att.json"))), key=str)
+print("USB:", usb_att)
+print("PCI:", pci_att)
+assert usb_att == usb_cim, (usb_att, usb_cim)
+assert pci_att == pci_cim, (pci_att, pci_cim)
+PY
+        rm -rf "$pnp_dir"
+        ;;
+esac
+
 # battery reads the batteries. A runner has none, and the tool says so.
 step battery
 step battery --json

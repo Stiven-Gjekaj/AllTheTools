@@ -11,6 +11,7 @@ pub mod cli;
 mod contract;
 pub mod disks;
 pub mod host;
+pub mod pnp;
 pub mod progress;
 pub mod rawdev;
 #[cfg(test)]

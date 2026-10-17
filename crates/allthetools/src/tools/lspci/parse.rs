@@ -6,7 +6,7 @@
 use std::collections::{BTreeMap, HashMap, HashSet};
 
 use anyhow::{Context, Result};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 /// One PCI function.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
@@ -282,52 +282,24 @@ fn mac_slot(text: &str) -> Option<String> {
     Some(format!("{bus:02x}:{device:02x}.{function:x}"))
 }
 
-/// One row of Win32_PnPEntity, as PowerShell writes it in JSON.
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-struct PnpEntity {
-    #[serde(rename = "PNPDeviceID")]
-    pnp_device_id: Option<String>,
-    name: Option<String>,
-    manufacturer: Option<String>,
-    #[serde(rename = "CompatibleID", default)]
-    compatible_id: Option<CompatibleIds>,
-}
-
-/// PowerShell writes one compatible ID as a string, and more than one as a
-/// list.
-#[derive(Debug, Deserialize)]
-#[serde(untagged)]
-enum CompatibleIds {
-    One(String),
-    Many(Vec<String>),
-}
-
-/// Read the devices from the JSON of Win32_PnPEntity on Windows. The ID of a
-/// device is `PCI\VEN_8086&DEV_9A49&SUBSYS_...&REV_01\<instance>`, and one of
-/// its compatible IDs holds the class as `CC_030000`.
-pub fn windows(json: &str) -> Result<Vec<Device>> {
-    let rows: Vec<PnpEntity> = if json.trim().is_empty() {
-        Vec::new()
-    } else {
-        serde_json::from_str(json).context("PowerShell gave JSON that is not a list of devices")?
-    };
+/// Read the devices of the PnP manager of Windows. The ID of a device is
+/// `PCI\VEN_8086&DEV_9A49&SUBSYS_...&REV_01\<instance>`, and one of its
+/// compatible IDs holds the class as `CC_030000`.
+pub fn windows(rows: &[crate::pnp::Row]) -> Vec<Device> {
     let mut devices: Vec<Device> = rows
         .iter()
         .filter_map(|row| {
-            let id = row.pnp_device_id.as_deref()?.to_ascii_uppercase();
+            let id = row.id.to_ascii_uppercase();
             let ids = id.strip_prefix("PCI\\")?.split('\\').next()?;
             let field = |key: &str, len: usize| {
                 let start = ids.find(key)? + key.len();
                 u32::from_str_radix(ids.get(start..start + len)?, 16).ok()
             };
-            let compatible: Vec<String> = match &row.compatible_id {
-                Some(CompatibleIds::One(one)) => vec![one.to_ascii_uppercase()],
-                Some(CompatibleIds::Many(many)) => {
-                    many.iter().map(|c| c.to_ascii_uppercase()).collect()
-                }
-                None => Vec::new(),
-            };
+            let compatible: Vec<String> = row
+                .compatible
+                .iter()
+                .map(|c| c.to_ascii_uppercase())
+                .collect();
             let class = compatible.iter().find_map(|c| {
                 let start = c.find("CC_")? + 3;
                 u32::from_str_radix(c.get(start..start + 6)?, 16).ok()
@@ -347,7 +319,7 @@ pub fn windows(json: &str) -> Result<Vec<Device>> {
         })
         .collect();
     sort(&mut devices);
-    Ok(devices)
+    devices
 }
 
 #[cfg(test)]
@@ -454,7 +426,7 @@ mod tests {
 
     #[test]
     fn windows_reads_the_ids_and_the_class_of_each_pci_device() {
-        let devices = windows(CIM).unwrap();
+        let devices = windows(&crate::pnp::from_json(CIM).unwrap());
         assert_eq!(devices.len(), 2, "a device that is not on PCI is skipped");
         let nvme = devices.iter().find(|d| d.vendor_id == 0x144d).unwrap();
         assert_eq!(nvme.class, Some(0x010802));

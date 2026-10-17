@@ -6,7 +6,7 @@
 use std::collections::BTreeMap;
 
 use anyhow::{Context, Result};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 /// One USB device.
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
@@ -169,34 +169,18 @@ fn mac_walk(entry: &plist::Value, out: &mut Vec<Device>) {
     }
 }
 
-/// One row of Win32_PnPEntity, as PowerShell writes it in JSON.
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-struct PnpEntity {
-    #[serde(rename = "PNPDeviceID")]
-    pnp_device_id: Option<String>,
-    name: Option<String>,
-    manufacturer: Option<String>,
-}
-
-/// Read the devices from the JSON of Win32_PnPEntity on Windows.
+/// Read the devices of the PnP manager of Windows.
 ///
 /// The ID of a device is `USB\VID_05AC&PID_12A8\<instance>`. An ID with
 /// `&MI_` is an interface of a device, and an ID with no `VID_` is a root
 /// hub. Neither is a device of its own. The instance is the serial number
 /// when it holds no `&`, because Windows makes up an instance with `&` when
 /// the device has no serial number.
-pub fn windows(json: &str) -> Result<Vec<Device>> {
-    let rows: Vec<PnpEntity> = if json.trim().is_empty() {
-        Vec::new()
-    } else {
-        serde_json::from_str(json).context("PowerShell gave JSON that is not a list of devices")?
-    };
+pub fn windows(rows: &[crate::pnp::Row]) -> Vec<Device> {
     let mut devices: Vec<Device> = rows
         .iter()
         .filter_map(|row| {
-            let id = row.pnp_device_id.as_deref()?;
-            let mut parts = id.split('\\');
+            let mut parts = row.id.split('\\');
             let bus = parts.next()?;
             let ids = parts.next()?.to_ascii_uppercase();
             let instance = parts.next().unwrap_or("");
@@ -223,7 +207,7 @@ pub fn windows(json: &str) -> Result<Vec<Device>> {
         })
         .collect();
     sort(&mut devices);
-    Ok(devices)
+    devices
 }
 
 #[cfg(test)]
@@ -361,7 +345,7 @@ mod tests {
 
     #[test]
     fn windows_skips_interfaces_and_root_hubs() {
-        let devices = windows(CIM).unwrap();
+        let devices = windows(&crate::pnp::from_json(CIM).unwrap());
         assert_eq!(devices.len(), 2);
         let receiver = devices.iter().find(|d| d.vendor_id == 0x046d).unwrap();
         assert_eq!(receiver.product_id, 0xc52b);
@@ -380,8 +364,7 @@ mod tests {
 
     #[test]
     fn windows_with_no_device_gives_an_empty_list() {
-        assert!(windows("").unwrap().is_empty());
-        assert!(windows("[]").unwrap().is_empty());
+        assert!(windows(&[]).is_empty());
     }
 
     #[test]
