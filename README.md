@@ -111,11 +111,11 @@ On Debian, Ubuntu, Fedora or openSUSE, with the package of the
 [latest release](https://github.com/Stiven-Gjekaj/AllTheTools/releases/latest):
 
 ```bash
-sudo apt install ./allthetools_0.9.0-1_amd64.deb
+sudo apt install ./allthetools_1.0.0-1_amd64.deb
 ```
 
 ```bash
-sudo dnf install ./allthetools-0.9.0-1.x86_64.rpm
+sudo dnf install ./allthetools-1.0.0-1.x86_64.rpm
 ```
 
 Or download the binary for your host from the
@@ -134,7 +134,7 @@ what the file holds. Check the file first, and then take the mark off. On
 macOS:
 
 ```bash
-xattr -d com.apple.quarantine att-0.9.0-aarch64-apple-darwin
+xattr -d com.apple.quarantine att-1.0.0-aarch64-apple-darwin
 ```
 
 On Windows, SmartScreen can show "Windows protected your PC". Select
