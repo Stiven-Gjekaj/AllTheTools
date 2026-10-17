@@ -7,6 +7,8 @@ use clap::Parser;
 
 pub mod alias;
 pub mod cli;
+#[cfg(test)]
+mod contract;
 pub mod disks;
 pub mod host;
 pub mod progress;
