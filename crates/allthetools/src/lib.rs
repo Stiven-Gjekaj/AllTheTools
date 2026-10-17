@@ -42,6 +42,7 @@ pub fn run() -> i32 {
         Command::Ldd(args) => tools::ldd::run(args),
         Command::Link(args) => tools::link::run(args),
         Command::Lsblk(args) => tools::lsblk::run(args),
+        Command::Lscpu(args) => tools::lscpu::run(args),
         Command::Lspci(args) => tools::lspci::run(args),
         Command::Lsusb(args) => tools::lsusb::run(args),
         Command::Mount(args) => tools::mount::run(args),

@@ -49,6 +49,8 @@ pub enum Command {
     Link(tools::link::Args),
     /// List the drives and their partitions as a tree.
     Lsblk(tools::lsblk::Args),
+    /// Show the model, the cores, the threads and the caches of the processor.
+    Lscpu(tools::lscpu::Args),
     /// List the PCI devices.
     Lspci(tools::lspci::Args),
     /// List the USB devices.
