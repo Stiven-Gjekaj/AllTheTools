@@ -295,6 +295,7 @@ name that runs `att`, and nothing else.
 
 Each tool that lists or measures takes `--json`, and it prints JSON on the
 output stream. The text for a person goes to the error stream.
+[docs/json.md](docs/json.md) names each field.
 
 ```bash
 att lsusb --json
