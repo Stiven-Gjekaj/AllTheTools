@@ -8,6 +8,10 @@ Every release is written here, newest first. A version is `MAJOR.MINOR.PATCH`.
 
 ## Unreleased
 
+Nothing yet.
+
+## 0.9.0 (2026-10-17)
+
 The release candidate of 1.0. No new tool and no new option comes until 1.0.
 
 - [docs/stability.md](docs/stability.md) says what each 1.x release keeps the
