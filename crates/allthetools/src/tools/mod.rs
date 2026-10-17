@@ -10,6 +10,7 @@ pub mod du;
 pub mod edid;
 pub mod eject;
 pub mod flash;
+pub mod flushdns;
 pub mod free;
 pub mod hash;
 pub mod hexdump;
