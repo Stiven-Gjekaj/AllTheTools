@@ -5,7 +5,7 @@ use anyhow::Result;
 
 use crate::host;
 
-pub fn say(text: &str, voice: Option<&str>, wpm: Option<u32>) -> Result<()> {
+pub fn say(text: &str, voice: Option<&str>, wpm: Option<u32>, output: Option<&str>) -> Result<()> {
     let wpm = wpm.map(|w| w.to_string());
     let mut args = Vec::new();
     if let Some(voice) = voice {
@@ -13,6 +13,14 @@ pub fn say(text: &str, voice: Option<&str>, wpm: Option<u32>) -> Result<()> {
     }
     if let Some(wpm) = &wpm {
         args.extend(["-r", wpm.as_str()]);
+    }
+    if let Some(output) = output {
+        args.extend([
+            "--file-format=WAVE",
+            "--data-format=LEI16@22050",
+            "-o",
+            output,
+        ]);
     }
     host::feed("say", &args, text.as_bytes(), None)
 }

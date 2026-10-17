@@ -15,9 +15,12 @@ fn program() -> Result<&'static str> {
     }
 }
 
-pub fn say(text: &str, voice: Option<&str>, wpm: Option<u32>) -> Result<()> {
+pub fn say(text: &str, voice: Option<&str>, wpm: Option<u32>, output: Option<&str>) -> Result<()> {
     let program = program()?;
-    let args = plan::linux_args(program, voice, wpm, text);
+    if output.is_some() && program == "spd-say" {
+        bail!("spd-say cannot write a file. Install espeak-ng to write the speech to a file");
+    }
+    let args = plan::linux_args(program, voice, wpm, output, text);
     let args: Vec<&str> = args.iter().map(String::as_str).collect();
     if program == "spd-say" {
         host::output(program, &args, None)?;

@@ -39,8 +39,12 @@ pub struct Args {
     #[arg(short, long, value_name = "WPM", value_parser = clap::value_parser!(u32).range(40..=600))]
     pub rate: Option<u32>,
 
+    /// Write the speech to this WAV file, and play nothing.
+    #[arg(short, long, value_name = "FILE")]
+    pub output: Option<std::path::PathBuf>,
+
     /// List the voices of the host.
-    #[arg(short, long, conflicts_with_all = ["text", "voice", "rate"])]
+    #[arg(short, long, conflicts_with_all = ["text", "voice", "rate", "output"])]
     pub list: bool,
 }
 
@@ -59,6 +63,12 @@ pub fn run(args: Args) -> Result<i32> {
     if text.trim().is_empty() {
         bail!("there is no text to say");
     }
-    host::say(&text, args.voice.as_deref(), args.rate)?;
+    let output = match &args.output {
+        // The speech program runs in another folder on some hosts, so it
+        // gets the full path.
+        Some(path) => Some(std::path::absolute(path)?.to_string_lossy().into_owned()),
+        None => None,
+    };
+    host::say(&text, args.voice.as_deref(), args.rate, output.as_deref())?;
     Ok(0)
 }

@@ -35,7 +35,13 @@ pub fn linux_program(on_path: impl Fn(&str) -> bool) -> Option<&'static str> {
 
 /// The arguments of a Linux speech program. espeak reads the text from its
 /// input stream, and spd-say takes it as an argument.
-pub fn linux_args(program: &str, voice: Option<&str>, wpm: Option<u32>, text: &str) -> Vec<String> {
+pub fn linux_args(
+    program: &str,
+    voice: Option<&str>,
+    wpm: Option<u32>,
+    output: Option<&str>,
+    text: &str,
+) -> Vec<String> {
     let mut args: Vec<String> = Vec::new();
     if program == "spd-say" {
         args.push("--wait".to_owned());
@@ -52,6 +58,9 @@ pub fn linux_args(program: &str, voice: Option<&str>, wpm: Option<u32>, text: &s
         }
         if let Some(voice) = voice {
             args.extend(["-v".to_owned(), voice.to_owned()]);
+        }
+        if let Some(output) = output {
+            args.extend(["-w".to_owned(), output.to_owned()]);
         }
         args.push("--stdin".to_owned());
     }
@@ -70,7 +79,9 @@ if ($env:ATT_SAY_LIST) {
 }
 if ($env:ATT_SAY_VOICE) { $s.SelectVoice($env:ATT_SAY_VOICE) }
 if ($env:ATT_SAY_RATE) { $s.Rate = [int]$env:ATT_SAY_RATE }
+if ($env:ATT_SAY_OUTPUT) { $s.SetOutputToWaveFile($env:ATT_SAY_OUTPUT) }
 $s.Speak($env:ATT_SAY_TEXT)
+$s.Dispose()
 ";
 
 #[cfg(test)]
@@ -100,9 +111,11 @@ mod tests {
 
     #[test]
     fn espeak_reads_the_text_from_its_input_and_spd_say_from_an_argument() {
-        let espeak = linux_args("espeak-ng", Some("en"), Some(200), "hello");
+        let espeak = linux_args("espeak-ng", Some("en"), Some(200), None, "hello");
         assert_eq!(espeak, ["-s", "200", "-v", "en", "--stdin"]);
-        let spd = linux_args("spd-say", None, None, "-n hello");
+        let file = linux_args("espeak", None, None, Some("out.wav"), "hello");
+        assert_eq!(file, ["-w", "out.wav", "--stdin"]);
+        let spd = linux_args("spd-say", None, None, None, "-n hello");
         assert_eq!(spd, ["--wait", "--", "-n hello"]);
     }
 }

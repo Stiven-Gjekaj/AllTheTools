@@ -25,13 +25,16 @@ fn run(env: &[(&str, String)]) -> Result<String> {
     Ok(String::from_utf8_lossy(&out.stdout).into_owned())
 }
 
-pub fn say(text: &str, voice: Option<&str>, wpm: Option<u32>) -> Result<()> {
+pub fn say(text: &str, voice: Option<&str>, wpm: Option<u32>, output: Option<&str>) -> Result<()> {
     let mut env = vec![("ATT_SAY_TEXT", text.to_owned())];
     if let Some(voice) = voice {
         env.push(("ATT_SAY_VOICE", voice.to_owned()));
     }
     if let Some(wpm) = wpm {
         env.push(("ATT_SAY_RATE", plan::sapi_rate(wpm).to_string()));
+    }
+    if let Some(output) = output {
+        env.push(("ATT_SAY_OUTPUT", output.to_owned()));
     }
     run(&env)?;
     Ok(())

@@ -549,8 +549,12 @@ if [ -n "${CI:-}" ]; then
             fi
             ;;
         *)
+            # A runner has no sound device, so the speech goes to a file.
             step say --list
-            step say -r 300 "att smoke"
+            say_dir="$(mktemp -d)"
+            step say -r 300 -o "$say_dir/smoke.wav" "att smoke"
+            test "$(head -c 4 "$say_dir/smoke.wav")" = RIFF
+            rm -rf "$say_dir"
             ;;
     esac
 fi
