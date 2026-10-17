@@ -57,9 +57,9 @@ Some tools run a command of the host where an API exists, because the API is
 very large for the job. Each one can move to the API, one tool at a time, with
 no change to its output:
 
-- `att lsusb`, `att lspci` and `att lsblk` on Windows run PowerShell, which
-  takes about half a second to start. SetupAPI and the storage IOCTLs give the
-  same data in a few milliseconds.
+- `att lsblk` on Windows runs PowerShell, which takes about half a second to
+  start. The storage IOCTLs give the same data in a few milliseconds.
+  `att lsusb` and `att lspci` read SetupAPI since version 0.5.
 - `att lsblk`, `att mount` and `att eject` on macOS run `diskutil` and
   `hdiutil`. Disk Arbitration is the framework under both.
 - `att whoport` and `att whoholds` on macOS run `lsof`. `libproc` is the API

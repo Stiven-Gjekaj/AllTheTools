@@ -207,13 +207,15 @@ three hosts. Hardware: macOS, against `du -sk` to the KiB.
 | :-- | :-- |
 | Linux | `/sys/bus/usb/devices` |
 | macOS | `ioreg -p IOUSB -l -r -c IOUSBHostDevice -a` |
-| Windows | `Win32_PnPEntity` in JSON |
+| Windows | the present devices of the USB enumerator, through SetupAPI |
 
 Each name is the name that the device reports. Linux `lsusb` uses the list
 `usb.ids`, so its names can differ. Windows gives no bus and no address.
 
-Tested: CI on the three hosts. Hardware: macOS with a USB hub, a card reader,
-a network adapter and a USB stick, against `system_profiler`.
+Tested: CI on the three hosts. On Windows, CI checks that the list agrees
+with `Win32_PnPEntity` of WMI, and the runner has no USB device. Hardware:
+macOS with a USB hub, a card reader, a network adapter and a USB stick,
+against `system_profiler`.
 
 ### `att lspci`
 
@@ -221,9 +223,11 @@ a network adapter and a USB stick, against `system_profiler`.
 | :-- | :-- |
 | Linux | `/sys/bus/pci/devices`, and the names in `pci.ids` when the host has it |
 | macOS | `ioreg -r -c IOPCIDevice -a` |
-| Windows | `Win32_PnPEntity` in JSON, with the class from the compatible IDs |
+| Windows | the present devices of the PCI enumerator, through SetupAPI, with the class from the compatible IDs |
 
-Tested: CI on the three hosts. Hardware: macOS on Apple silicon.
+Tested: CI on the three hosts. On Windows, CI checks that the list agrees
+with `Win32_PnPEntity` of WMI, ID for ID and name for name. Hardware: macOS on
+Apple silicon.
 
 ### `att sensors`
 
