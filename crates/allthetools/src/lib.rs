@@ -13,6 +13,8 @@ pub mod disks;
 pub mod host;
 pub mod progress;
 pub mod rawdev;
+#[cfg(test)]
+mod robust;
 pub mod size;
 #[cfg(target_os = "macos")]
 pub mod sysctl;
