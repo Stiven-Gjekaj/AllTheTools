@@ -27,7 +27,7 @@ _One binary. The same command on Windows, on macOS, and on Linux._
 ---
 
 > [!NOTE]
-> **Twenty-seven tools are built.**
+> **Thirty-five tools are built.**
 > CI runs each one on Windows, on macOS and on Linux, on each change.
 > The tools that write to a drive are tested against fake drives in memory,
 > and on image files, loop devices and VHDs in CI.
@@ -39,13 +39,13 @@ _One binary. The same command on Windows, on macOS, and on Linux._
 
 ## Overview
 
-**AllTheTools** is one command, `att`, with twenty-seven small tools in it.
+**AllTheTools** is one command, `att`, with thirty-five small tools in it.
 
 Each tool closes a gap. Linux has `lsusb`, and macOS and Windows do not.
 Linux has `f3probe` to find a fake flash drive, and the other two do not.
 macOS has `caffeinate` and `networkQuality`, and Linux and Windows do not.
-Windows has no `timeout` that stops a command, no `ldd`, no `xxd`, no `watch`
-and no clipboard command that pastes.
+Windows has no `timeout` that stops a command, no `ldd`, no `xxd`, no `watch`,
+no `df`, no `du`, no `sha256sum` and no clipboard command that pastes.
 
 So the answer to a simple question depends on which computer you sit at, and
 each answer has its own flags to learn. `att` gives one answer: the same
@@ -149,6 +149,8 @@ On Windows, SmartScreen can show "Windows protected your PC". Select
 | `att lsblk` | Lists the drives and their partitions as a tree | Linux: lsblk | macOS, Windows |
 | `att flash` | Writes an ISO or IMG to a USB drive, and reads it back to check it | Linux, macOS: dd, with no check | Windows |
 | `att eject` | Unmounts a drive and makes it safe to remove | macOS, Linux | Windows |
+| `att df` | Shows the size and the free space of each volume | macOS, Linux: df | Windows |
+| `att du` | Lists the largest files and folders under a path | macOS, Linux: du | Windows |
 | `att mount` | Attaches an ISO, IMG, DMG or VHD and mounts it | each, with other commands | one command |
 | `att whoholds` | Shows the process that holds a file or a drive | macOS, Linux: lsof, fuser | Windows |
 | `att lsusb` | Lists the USB devices | Linux: lsusb | macOS, Windows |
@@ -158,9 +160,12 @@ On Windows, SmartScreen can show "Windows protected your PC". Select
 | `att ddc` | Sets the brightness and the input of a monitor | Linux: ddcutil | macOS, Windows |
 | `att edid` | Shows the maker, the model, the serial and the native mode of a display | Linux: edid-decode | macOS, Windows |
 | `att free` | Shows the memory and the swap | Linux: free | macOS, Windows |
+| `att lscpu` | Shows the cores, the threads and the caches of the processor | Linux: lscpu | macOS, Windows |
 | `att netquality` | Measures the speed and the responsiveness | macOS: networkQuality | Linux, Windows |
 | `att wifi` | Lists the Wi-Fi networks near the computer | Linux: nmcli | macOS since 14.4, Windows |
 | `att whoport` | Shows the process of a port, and stops it | each, with other commands | one table |
+| `att ip` | Lists the network interfaces and their addresses | each, with other commands | one table |
+| `att flushdns` | Empties the DNS cache | each, with other commands | one command |
 | `att wol` | Wakes a computer on the local network | none | macOS, Linux, Windows |
 | `att timeout` | Stops a command when its time runs out | Linux: timeout | macOS, Windows |
 | `att watch` | Runs a command again and again, and marks what changed | Linux: watch | macOS, Windows |
@@ -170,6 +175,9 @@ On Windows, SmartScreen can show "Windows protected your PC". Select
 | `att unquarantine` | Removes the download mark of a file | each, with other commands | one command |
 | `att trash` | Moves a file to the trash, where you can get it back | Linux: gio trash; macOS 15: trash | Windows, older macOS |
 | `att hexdump` | Shows the bytes of a file, with the options of xxd | macOS, Linux: xxd | Windows |
+| `att hash` | Gives and checks SHA-256, SHA-1, SHA-512 and MD5 checksums | Linux: sha256sum; macOS: shasum | Windows |
+| `att say` | Reads text aloud | macOS: say | Linux, Windows |
+| `att uptime` | Shows the time since the start, and the load | macOS, Linux: uptime | Windows |
 | `att ldd` | Lists the libraries of a binary of any host | Linux: ldd | macOS, Windows |
 
 `att <tool> --help` gives the options of each tool.
@@ -198,6 +206,8 @@ att flash ubuntu.iso disk4 # write an installer to a USB stick, and check it
 att probe disk4            # is this USB stick fake? It writes back what it tests.
 att surface disk4          # read each sector, and name the bad ones
 att surface --write disk4  # write and read back each sector. This erases it.
+att df
+att du -n 10 ~/Downloads
 att whoholds /Volumes/STICK
 att eject disk4
 att mount ubuntu-24.04.iso
@@ -217,6 +227,7 @@ att sensors
 att battery
 att free
 att edid
+att lscpu
 att ddc set brightness 70
 att ddc set input hdmi2
 ```
@@ -229,6 +240,8 @@ att wifi
 att whoport 3000
 att whoport 3000 --kill
 att wol aa:bb:cc:dd:ee:ff
+att ip
+sudo att flushdns
 ```
 
 ### Shell
@@ -239,6 +252,9 @@ att watch -d -n 1 df -h
 make && att notify "The build is done"
 att trash old-notes.txt
 att hexdump -l 64 disk.img
+att hash -c SHA256SUMS
+att say "The backup is done"
+att uptime
 att awake --display -- cargo build --release
 echo "some text" | att clip
 att clip paste
@@ -268,9 +284,9 @@ Skipped pbcopy: the host has a program of that name. Add --force to make it anyw
 ```
 
 Then `lsusb`, `lspci`, `lsblk`, `f3probe`, `badblocks`, `sensors`, `ldd`,
-`timeout`, `caffeinate`, `pbcopy`, `watch`, `xxd`, `free`, `trash` and the
-others run the tools of `att`. A
-name that the host has already is skipped. `att link --remove` removes each
+`timeout`, `caffeinate`, `pbcopy`, `watch`, `xxd`, `free`, `trash`,
+`sha256sum`, `md5sum`, `uptime` and the others run the tools of `att`. A name
+that the host has already is skipped. `att link --remove` removes each
 name that runs `att`, and nothing else.
 
 ---
@@ -292,7 +308,7 @@ The exit codes:
 | :-- | :-- |
 | 0 | The tool did its work, and it found no problem. |
 | 1 | The tool failed, and the error stream says why. |
-| 2 | The tool did its work, and it found a problem: `surface` found a bad sector, `probe` found a fake drive, or `flash` read back a byte that is not the same. |
+| 2 | The tool did its work, and it found a problem: `surface` found a bad sector, `probe` found a fake drive, `flash` read back a byte that is not the same, or `hash -c` found a file that does not match. |
 | 124 | `timeout` stopped the command when its time ran out, as GNU `timeout` does. |
 
 ---
