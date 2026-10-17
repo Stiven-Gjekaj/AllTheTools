@@ -12,6 +12,8 @@
 set -euo pipefail
 
 ATT="${1:?usage: smoke.sh <path to att>}"
+# An absolute path, so a step that changes the folder still finds att.
+ATT="$(cd "$(dirname "$ATT")" && pwd)/$(basename "$ATT")"
 
 # The file of the binary. Windows adds .exe, and a shell finds it without the
 # suffix, but a tool that reads the file needs the full name.
@@ -460,6 +462,98 @@ case "$(uname -s)" in
 esac
 head -c 10000001 "$flash_dir/out.img" | cmp - "$flash_dir/in.img"
 rm -rf "$flash_dir"
+
+# df lists the volumes. Each runner has a volume with a size, and the
+# volume of the current folder must be one of them.
+step df
+step df .
+"$ATT" df --json | "$PY" -c 'import json, sys; v = json.load(sys.stdin); assert v and all(x["used"] <= x["size"] for x in v), v'
+
+# du adds up a folder that this script makes, with sizes that it knows.
+du_dir="$(mktemp -d)"
+mkdir "$du_dir/sub"
+head -c 1000 /dev/zero > "$du_dir/a.bin"
+head -c 5000 /dev/zero > "$du_dir/sub/b.bin"
+step du "$du_dir"
+"$ATT" du --apparent-size --json "$du_dir" | "$PY" -c '
+import json, sys
+r = json.load(sys.stdin)[0]
+e = {x["path"]: x for x in r["entries"]}
+assert e["a.bin"]["size"] == 1000 and not e["a.bin"]["folder"], e
+assert e["sub"]["size"] >= 5000 and e["sub"]["folder"], e
+assert r["entries"][0]["path"] == "sub", r
+assert r["total"] >= 6000, r'
+rm -rf "$du_dir"
+
+# hash gives the same digests as hashlib of Python, and the check finds a
+# file that changed.
+hash_dir="$(mktemp -d)"
+head -c 100003 /dev/urandom > "$hash_dir/data.bin"
+for algorithm in md5 sha1 sha256 sha512; do
+    ours="$("$ATT" hash -a "$algorithm" "$hash_dir/data.bin" | cut -d' ' -f1)"
+    theirs="$("$PY" -c 'import hashlib, sys; print(hashlib.new(sys.argv[1], open(sys.argv[2], "rb").read()).hexdigest())' "$algorithm" "$hash_dir/data.bin")"
+    if [ "$ours" != "$theirs" ]; then
+        echo "att hash -a $algorithm gave $ours, and Python gave $theirs" >&2
+        exit 1
+    fi
+done
+(cd "$hash_dir" && "$ATT" hash data.bin > SHA256SUMS)
+step hash -c "$hash_dir/SHA256SUMS"
+printf 'x' >> "$hash_dir/data.bin"
+set +e
+"$ATT" hash -c "$hash_dir/SHA256SUMS"
+code=$?
+set -e
+if [ "$code" != 2 ]; then
+    echo "att hash -c gave $code for a file that changed, and not 2" >&2
+    exit 1
+fi
+rm -rf "$hash_dir"
+
+# lscpu reads the processor. Each runner has cores and threads.
+step lscpu
+"$ATT" lscpu --json | "$PY" -c 'import json, sys; c = json.load(sys.stdin); assert c["cores"] > 0 and c["threads"] >= c["cores"], c'
+
+# ip lists the interfaces. Each host has a loopback interface with
+# 127.0.0.1.
+step ip
+"$ATT" ip --json | "$PY" -c '
+import json, sys
+found = [a["address"] for i in json.load(sys.stdin) for a in i["addresses"]]
+assert "127.0.0.1" in found, found'
+
+# uptime gives the time since the start of the runner.
+step uptime
+step uptime --since
+"$ATT" uptime --json | "$PY" -c 'import json, sys; u = json.load(sys.stdin); assert u["seconds"] > 0 and u["boot"] > 1600000000, u'
+
+# flushdns and say change the state of the computer of the person, so they
+# run only in CI. flushdns needs root on macOS and Linux. A Linux runner has
+# no speech program, and say must name the package.
+if [ -n "${CI:-}" ]; then
+    case "$(uname -s)" in
+        Linux | Darwin)
+            echo "::group::sudo att flushdns"
+            sudo "$ATT" flushdns
+            echo "::endgroup::"
+            ;;
+        *) step flushdns ;;
+    esac
+    case "$(uname -s)" in
+        Linux)
+            if out="$("$ATT" say "att smoke" 2>&1)"; then
+                echo "$out"
+            else
+                echo "$out"
+                echo "$out" | grep -q "espeak"
+            fi
+            ;;
+        *)
+            step say --list
+            step say -r 300 "att smoke"
+            ;;
+    esac
+fi
 
 # link makes the familiar names in a directory of this script, runs one of
 # them, and removes them all.
