@@ -13,7 +13,7 @@ This file says what comes next, in order.
 Version 1.0 is a promise: the name of each tool, its options, its exit codes
 and the fields of its JSON stay the same for each 1.x release. A new tool, a
 new option or a new field can come in 1.x. A change that breaks a script that
-works needs 2.0. The file docs/stability.md of version 0.9 gives the rules.
+works needs 2.0. [docs/stability.md](stability.md) gives the rules.
 
 | Version | What it adds |
 | --- | --- |

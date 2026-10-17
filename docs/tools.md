@@ -123,7 +123,7 @@ Hardware: macOS with an image file and with the raw node of a disk image.
 
 ### `att probe`
 
-The test of f3probe. It keeps a copy of about 300 sample blocks, writes a
+The test of f3probe. It keeps a copy of a few hundred sample blocks, writes a
 marker to each one from the highest to the lowest, reads each one back, and
 then searches for the edge between the good blocks and the bad ones. At the
 end it writes each copy back, from the highest block to the lowest.

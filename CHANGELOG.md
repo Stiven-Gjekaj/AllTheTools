@@ -8,7 +8,12 @@ Every release is written here, newest first. A version is `MAJOR.MINOR.PATCH`.
 
 ## Unreleased
 
-Nothing yet.
+The release candidate of 1.0. No new tool and no new option comes until 1.0.
+
+- [docs/stability.md](docs/stability.md) says what each 1.x release keeps the
+  same: the tools, their options, the exit codes and the JSON fields.
+- [docs/limits.md](docs/limits.md) lists the known limits of each tool on each
+  host.
 
 ## 0.5.0 (2026-10-17)
 

@@ -11,7 +11,7 @@ field fails the tests before it reaches a release.
 
 From version 1.0, the fields of this file stay as they are for each 1.x
 release. A 1.x release can add a field. A script must skip a field that it
-does not know. The file docs/stability.md of version 0.9 gives the rules.
+does not know. [docs/stability.md](stability.md) gives the rules.
 
 ## The rules for each field
 

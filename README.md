@@ -319,6 +319,9 @@ The exit codes:
 | Document | What it holds |
 | :-- | :-- |
 | [docs/tools.md](docs/tools.md) | How each tool works on each host, and how it was tested |
+| [docs/json.md](docs/json.md) | Each field of the JSON output of each tool |
+| [docs/stability.md](docs/stability.md) | What a version promises to a script |
+| [docs/limits.md](docs/limits.md) | What each tool cannot do on each host |
 | [docs/roadmap.md](docs/roadmap.md) | What comes next, and the tests that wait for real hardware |
 | [docs/releasing.md](docs/releasing.md) | How a release is cut for each package manager, and how to check a download |
 | [CHANGELOG.md](CHANGELOG.md) | Each release |
