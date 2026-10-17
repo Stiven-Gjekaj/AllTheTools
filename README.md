@@ -101,7 +101,7 @@ scoop install stiven-gjekaj/allthetools
 ```
 
 On Windows, with winget, when Microsoft accepts the manifest in
-[winget-pkgs](https://github.com/microsoft/winget-pkgs/pull/454162):
+[winget-pkgs](https://github.com/microsoft/winget-pkgs/pull/454744):
 
 ```powershell
 winget install Stiven-Gjekaj.AllTheTools
