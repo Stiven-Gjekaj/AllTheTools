@@ -31,6 +31,7 @@ pub fn run() -> i32 {
         Command::Battery(args) => tools::battery::run(args),
         Command::Clip(args) => tools::clip::run(args),
         Command::Ddc(args) => tools::ddc::run(args),
+        Command::Df(args) => tools::df::run(args),
         Command::Edid(args) => tools::edid::run(args),
         Command::Eject(args) => tools::eject::run(args),
         Command::Flash(args) => tools::flash::run(args),
