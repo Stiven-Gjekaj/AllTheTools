@@ -8,6 +8,10 @@ Every release is written here, newest first. A version is `MAJOR.MINOR.PATCH`.
 
 ## Unreleased
 
+Nothing yet.
+
+## 1.0.0 (2026-10-17)
+
 The first stable version, with thirty-five tools in one binary. From this
 version, each 1.x release keeps the tools, their options, the exit codes and
 the fields of the JSON output the same, as
