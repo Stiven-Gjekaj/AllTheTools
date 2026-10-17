@@ -11,6 +11,7 @@ pub mod edid;
 pub mod eject;
 pub mod flash;
 pub mod free;
+pub mod hash;
 pub mod hexdump;
 pub mod ldd;
 pub mod link;
