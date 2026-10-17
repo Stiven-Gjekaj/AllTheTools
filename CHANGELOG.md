@@ -8,6 +8,10 @@ Every release is written here, newest first. A version is `MAJOR.MINOR.PATCH`.
 
 ## Unreleased
 
+Nothing yet.
+
+## 0.3.0 (2026-10-17)
+
 Eight new tools:
 
 - `df` shows the size and the free space of each mounted volume.
