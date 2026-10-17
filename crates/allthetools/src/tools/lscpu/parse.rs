@@ -354,7 +354,9 @@ pub fn windows(
             0 => {
                 cores += 1;
                 threads += logical(record, 30, 32);
-                *classes.entry(record[9]).or_insert(0) += 1;
+                *classes
+                    .entry(record.get(9).copied().unwrap_or(0))
+                    .or_insert(0) += 1;
             }
             // A cache: level, associativity, line size, size, type.
             2 => {
@@ -606,6 +608,15 @@ flags\t\t: fpu vme sse sse2 avx2
         );
         assert_eq!(cpu.caches.len(), 2);
         assert_eq!(cpu.caches[1].size, 24 << 20);
+    }
+
+    #[test]
+    fn a_core_record_with_no_class_counts_as_a_core() {
+        // A record of eight bytes has a relation and a size, and no field.
+        let mut record = vec![0u8; 8];
+        record[4..8].copy_from_slice(&8u32.to_le_bytes());
+        let cpu = windows("x86_64", &record, None, None, None);
+        assert_eq!((cpu.cores, cpu.threads), (1, 0));
     }
 
     #[test]
