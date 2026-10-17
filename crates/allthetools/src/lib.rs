@@ -12,6 +12,8 @@ pub mod host;
 pub mod progress;
 pub mod rawdev;
 pub mod size;
+#[cfg(target_os = "macos")]
+pub mod sysctl;
 pub mod table;
 pub mod time;
 pub mod tools;
