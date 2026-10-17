@@ -36,6 +36,8 @@ pub enum Command {
     Eject(tools::eject::Args),
     /// Write a disk image to a drive, and read it back to check it.
     Flash(tools::flash::Args),
+    /// Empty the DNS cache of this computer.
+    Flushdns(tools::flushdns::Args),
     /// Show the memory and the swap of this computer.
     Free(tools::free::Args),
     /// Give the checksum of files, and check a list of checksums.
