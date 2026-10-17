@@ -43,6 +43,9 @@ pub enum Command {
     /// Show the bytes of a file as hex, as xxd does, or turn the hex back
     /// into bytes.
     Hexdump(tools::hexdump::Args),
+    /// List the network interfaces with their state, their hardware address and
+    /// their IP addresses.
+    Ip(tools::ip::Args),
     /// List the libraries that a binary needs, and where each one is.
     Ldd(tools::ldd::Args),
     /// Make the familiar names, such as lsusb and f3probe, run att.
