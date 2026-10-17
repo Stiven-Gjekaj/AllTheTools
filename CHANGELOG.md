@@ -8,7 +8,21 @@ Every release is written here, newest first. A version is `MAJOR.MINOR.PATCH`.
 
 ## Unreleased
 
-Nothing yet.
+Eight new tools:
+
+- `df` shows the size and the free space of each mounted volume.
+- `du` lists the largest files and folders under a path.
+- `hash` gives SHA-256, SHA-1, SHA-512 and MD5 checksums, and `-c` checks a
+  list such as `SHA256SUMS`.
+- `lscpu` shows the cores, the threads, the kinds of cores and the caches of
+  the processor.
+- `ip` lists the network interfaces with their state and their addresses.
+- `flushdns` empties the DNS cache.
+- `say` reads text aloud, or writes it to a WAV file.
+- `uptime` shows the time since the start, and the load.
+
+`att link` makes more names: `lscpu`, `uptime`, `md5sum`, `sha1sum`,
+`sha256sum` and `sha512sum`.
 
 ## 0.2.0 (2026-10-16)
 

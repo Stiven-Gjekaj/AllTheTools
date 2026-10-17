@@ -25,7 +25,7 @@ stay anonymous.
 
 ## The threat model
 
-AllTheTools is twenty-seven small tools in one binary. Most of them only read.
+AllTheTools is thirty-five small tools in one binary. Most of them only read.
 Read this before you report.
 
 **Some tools need high privilege.**

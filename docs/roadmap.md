@@ -4,7 +4,7 @@
 
 # The roadmap
 
-The twenty-seven tools are built, and CI runs them on the three hosts on each
+The thirty-five tools are built, and CI runs them on the three hosts on each
 change.
 This file says what comes next, in order.
 
