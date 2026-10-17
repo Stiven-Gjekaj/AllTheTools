@@ -84,6 +84,8 @@ pub enum Command {
     /// Remove the download mark from files, so the system starts them
     /// without a warning.
     Unquarantine(tools::unquarantine::Args),
+    /// Show how long this computer has run since its start, and its load.
+    Uptime(tools::uptime::Args),
     /// Run a command again and again, and show its output on a clear
     /// screen.
     Watch(tools::watch::Args),

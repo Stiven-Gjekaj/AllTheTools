@@ -57,6 +57,7 @@ pub fn run() -> i32 {
         Command::Timeout(args) => tools::timeout::run(args),
         Command::Trash(args) => tools::trash::run(args),
         Command::Unquarantine(args) => tools::unquarantine::run(args),
+        Command::Uptime(args) => tools::uptime::run(args),
         Command::Watch(args) => tools::watch::run(args),
         Command::Whoholds(args) => tools::whoholds::run(args),
         Command::Whoport(args) => tools::whoport::run(args),
