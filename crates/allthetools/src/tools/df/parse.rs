@@ -6,7 +6,7 @@
 use serde::Serialize;
 
 /// One mounted volume, with sizes in bytes.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 pub struct Volume {
     /// The device or the label of the volume.
     pub source: String,

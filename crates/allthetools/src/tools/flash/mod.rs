@@ -43,15 +43,15 @@ pub struct Args {
 }
 
 /// What the tool did.
-#[derive(Debug, Serialize)]
-struct Report {
-    image: String,
-    target: String,
-    bytes: u64,
-    verified: bool,
+#[derive(Debug, Default, Serialize)]
+pub(crate) struct Report {
+    pub(crate) image: String,
+    pub(crate) target: String,
+    pub(crate) bytes: u64,
+    pub(crate) verified: bool,
     /// The offset of the first byte that read back wrong.
-    mismatch: Option<u64>,
-    seconds: f64,
+    pub(crate) mismatch: Option<u64>,
+    pub(crate) seconds: f64,
 }
 
 /// Each mount point of the target, so the tool can refuse an image that

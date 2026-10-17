@@ -18,7 +18,7 @@ pub struct Tally {
 }
 
 /// One row of the result.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 pub struct Entry {
     /// The path under the start, with `/` between the names.
     pub path: String,

@@ -7,7 +7,7 @@ use anyhow::{Result, bail};
 use serde::Serialize;
 
 /// The memory and the swap of the host, in bytes.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 pub struct Memory {
     pub total: u64,
     /// The memory that programs and the system hold, and that the host

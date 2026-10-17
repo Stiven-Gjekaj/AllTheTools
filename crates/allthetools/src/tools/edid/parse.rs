@@ -11,7 +11,7 @@ use serde::Serialize;
 const HEADER: [u8; 8] = [0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00];
 
 /// A mode of the display.
-#[derive(Debug, Clone, PartialEq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize)]
 pub struct Mode {
     pub width: u32,
     pub height: u32,
@@ -20,7 +20,7 @@ pub struct Mode {
 }
 
 /// What the EDID of one display says.
-#[derive(Debug, Clone, PartialEq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize)]
 pub struct Display {
     /// Where the host found the display, such as a connector.
     pub source: Option<String>,

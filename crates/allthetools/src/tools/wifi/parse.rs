@@ -6,7 +6,7 @@
 use serde::Serialize;
 
 /// One access point that the scan found.
-#[derive(Debug, Clone, PartialEq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize)]
 pub struct Network {
     /// The name. macOS and Windows hide it from a program that has no
     /// permission for the location.

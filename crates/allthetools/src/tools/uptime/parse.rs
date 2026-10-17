@@ -6,7 +6,7 @@
 use serde::Serialize;
 
 /// The time since the start of the host.
-#[derive(Debug, Clone, PartialEq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize)]
 pub struct Uptime {
     pub seconds: u64,
     /// The start, in seconds since 1970-01-01 UTC.

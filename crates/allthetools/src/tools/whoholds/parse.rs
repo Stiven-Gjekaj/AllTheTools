@@ -8,7 +8,7 @@ use std::path::Path;
 use serde::Serialize;
 
 /// One process that holds a file under the path.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 pub struct Holder {
     pub pid: u32,
     pub process: String,

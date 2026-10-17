@@ -41,7 +41,7 @@ pub struct Args {
 }
 
 /// One library in the result.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Default, Serialize)]
 pub struct Entry {
     pub name: String,
     pub path: Option<PathBuf>,
@@ -53,12 +53,12 @@ pub struct Entry {
     pub repeat: bool,
 }
 
-#[derive(Debug, Serialize)]
-struct Report {
-    file: PathBuf,
-    format: String,
-    interpreter: Option<String>,
-    libraries: Vec<Entry>,
+#[derive(Debug, Default, Serialize)]
+pub(crate) struct Report {
+    pub(crate) file: PathBuf,
+    pub(crate) format: String,
+    pub(crate) interpreter: Option<String>,
+    pub(crate) libraries: Vec<Entry>,
 }
 
 pub fn run(args: Args) -> Result<i32> {

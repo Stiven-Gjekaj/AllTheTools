@@ -15,7 +15,7 @@ pub struct Address {
 }
 
 /// One network interface.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 pub struct Interface {
     pub name: String,
     /// `up`, `no link` or `down`.

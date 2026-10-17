@@ -53,11 +53,11 @@ pub struct Args {
 }
 
 /// The result for one path.
-#[derive(Debug, Serialize)]
-struct Report {
-    path: String,
-    total: u64,
-    entries: Vec<Entry>,
+#[derive(Debug, Default, Serialize)]
+pub(crate) struct Report {
+    pub(crate) path: String,
+    pub(crate) total: u64,
+    pub(crate) entries: Vec<Entry>,
 }
 
 /// What the walk needs to know about a file.

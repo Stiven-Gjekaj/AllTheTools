@@ -64,17 +64,17 @@ const UP_BYTES: u64 = 25_000_000;
 const PROBE_EVERY: Duration = Duration::from_millis(250);
 const IDLE_PROBES: usize = 5;
 
-#[derive(Debug, Serialize)]
-struct Report {
-    server: String,
-    address: String,
-    idle_latency_ms: Option<f64>,
-    download_mbps: f64,
-    download_latency_ms: Option<f64>,
-    upload_mbps: f64,
-    upload_latency_ms: Option<f64>,
-    responsiveness_rpm: Option<f64>,
-    probes: usize,
+#[derive(Debug, Default, Serialize)]
+pub(crate) struct Report {
+    pub(crate) server: String,
+    pub(crate) address: String,
+    pub(crate) idle_latency_ms: Option<f64>,
+    pub(crate) download_mbps: f64,
+    pub(crate) download_latency_ms: Option<f64>,
+    pub(crate) upload_mbps: f64,
+    pub(crate) upload_latency_ms: Option<f64>,
+    pub(crate) responsiveness_rpm: Option<f64>,
+    pub(crate) probes: usize,
 }
 
 #[derive(Clone)]

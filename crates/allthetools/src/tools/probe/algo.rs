@@ -47,7 +47,7 @@ use crate::rawdev::{Aligned, Blocks};
 pub const BLOCK: u64 = 4096;
 
 /// What the test found.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 pub struct Outcome {
     /// The size that the drive reports.
     pub announced: u64,

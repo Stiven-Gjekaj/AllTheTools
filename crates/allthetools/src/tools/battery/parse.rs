@@ -10,8 +10,9 @@ use serde::{Deserialize, Serialize};
 
 /// The unit of a capacity. Hosts report energy or charge, and a health
 /// figure compares two values of the same unit only.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum Unit {
+    #[default]
     #[serde(rename = "mWh")]
     MilliwattHours,
     #[serde(rename = "mAh")]
@@ -28,7 +29,7 @@ impl Unit {
 }
 
 /// What the battery does now.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum State {
     Charging,
@@ -36,11 +37,12 @@ pub enum State {
     Full,
     /// The computer is on external power, and the battery does not charge.
     NotCharging,
+    #[default]
     Unknown,
 }
 
 /// One battery.
-#[derive(Debug, Clone, PartialEq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize)]
 pub struct Battery {
     pub name: Option<String>,
     pub maker: Option<String>,

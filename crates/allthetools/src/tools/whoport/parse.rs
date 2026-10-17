@@ -7,15 +7,16 @@ use std::net::{Ipv4Addr, Ipv6Addr};
 
 use serde::Serialize;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Proto {
+    #[default]
     Tcp,
     Udp,
 }
 
 /// One socket, and the process that holds it when the host says.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 pub struct Socket {
     pub proto: Proto,
     /// The local address, with no port. `*` means each address.

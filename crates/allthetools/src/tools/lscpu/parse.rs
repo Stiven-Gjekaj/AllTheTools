@@ -9,14 +9,14 @@ use serde::Serialize;
 
 /// A kind of core, on a processor that has more than one, such as the
 /// performance and the efficiency cores of Apple and Intel.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 pub struct Kind {
     pub name: String,
     pub cores: u32,
 }
 
 /// One group of the same caches.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 pub struct Cache {
     pub level: u8,
     /// `data`, `instruction` or `unified`.
@@ -28,7 +28,7 @@ pub struct Cache {
 }
 
 /// The processor of the host.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 pub struct Cpu {
     pub architecture: String,
     pub model: Option<String>,

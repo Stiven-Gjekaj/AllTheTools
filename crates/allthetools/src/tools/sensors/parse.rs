@@ -9,10 +9,11 @@ use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 
 /// What a sensor measures.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Kind {
     /// Degrees Celsius.
+    #[default]
     Temperature,
     /// Turns in a minute.
     Fan,
@@ -21,7 +22,7 @@ pub enum Kind {
 }
 
 /// One value of one sensor.
-#[derive(Debug, Clone, PartialEq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize)]
 pub struct Reading {
     /// The chip or the group that the sensor belongs to.
     pub chip: String,
