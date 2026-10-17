@@ -6,6 +6,7 @@ pub mod battery;
 pub mod clip;
 pub mod ddc;
 pub mod df;
+pub mod du;
 pub mod edid;
 pub mod eject;
 pub mod flash;
