@@ -25,6 +25,7 @@ pub mod mount;
 pub mod netquality;
 pub mod notify;
 pub mod probe;
+pub mod say;
 pub mod sensors;
 pub mod surface;
 pub mod timeout;
