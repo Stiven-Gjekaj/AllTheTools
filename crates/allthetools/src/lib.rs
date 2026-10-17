@@ -51,6 +51,7 @@ pub fn run() -> i32 {
         Command::Netquality(args) => tools::netquality::run(args),
         Command::Notify(args) => tools::notify::run(args),
         Command::Probe(args) => tools::probe::run(args),
+        Command::Say(args) => tools::say::run(args),
         Command::Sensors(args) => tools::sensors::run(args),
         Command::Surface(args) => tools::surface::run(args),
         Command::Timeout(args) => tools::timeout::run(args),

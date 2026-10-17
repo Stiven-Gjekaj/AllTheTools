@@ -69,6 +69,8 @@ pub enum Command {
     Notify(tools::notify::Args),
     /// Find the real size of a flash drive, as f3probe does.
     Probe(tools::probe::Args),
+    /// Read text aloud with a voice of the host.
+    Say(tools::say::Args),
     /// Show the temperatures, the fans and the voltages that the host
     /// reports.
     Sensors(tools::sensors::Args),
