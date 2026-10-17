@@ -132,6 +132,8 @@ step lspci --json
 case "$(uname -s)" in
     Linux | Darwin) ;;
     *)
+        PY=python3
+        command -v python3 >/dev/null 2>&1 || PY=python
         pnp_dir="$(mktemp -d)"
         cat > "$pnp_dir/pnp.ps1" <<'PS1'
 param($Bus)
