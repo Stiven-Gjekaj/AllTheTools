@@ -38,6 +38,8 @@ pub enum Command {
     Flash(tools::flash::Args),
     /// Show the memory and the swap of this computer.
     Free(tools::free::Args),
+    /// Give the checksum of files, and check a list of checksums.
+    Hash(tools::hash::Args),
     /// Show the bytes of a file as hex, as xxd does, or turn the hex back
     /// into bytes.
     Hexdump(tools::hexdump::Args),

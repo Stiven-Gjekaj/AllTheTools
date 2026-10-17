@@ -37,6 +37,7 @@ pub fn run() -> i32 {
         Command::Eject(args) => tools::eject::run(args),
         Command::Flash(args) => tools::flash::run(args),
         Command::Free(args) => tools::free::run(args),
+        Command::Hash(args) => tools::hash::run(args),
         Command::Hexdump(args) => tools::hexdump::run(args),
         Command::Ldd(args) => tools::ldd::run(args),
         Command::Link(args) => tools::link::run(args),
