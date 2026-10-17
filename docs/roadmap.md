@@ -18,7 +18,7 @@ works needs 2.0. The file docs/stability.md of version 0.9 gives the rules.
 | Version | What it adds |
 | --- | --- |
 | 0.3 | Eight tools: `df`, `du`, `hash`, `lscpu`, `ip`, `flushdns`, `say` and `uptime`. |
-| 0.4 | The contract: a file docs/json.md names each field of each JSON output, tests hold each field, and tests give the parsers bytes at random. |
+| 0.4 | The contract: [docs/json.md](json.md) names each field of each JSON output, tests hold each field, and tests give the parsers bytes at random. |
 | 0.5 | `att lsusb` and `att lspci` on Windows read SetupAPI and not PowerShell, with the same output. |
 | 0.9 | The release candidate: the stability rules, and the known limits of each tool. No new tool and no new option until 1.0. |
 | 1.0 | The promise starts. |
